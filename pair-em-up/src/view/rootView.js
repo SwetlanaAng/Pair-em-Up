@@ -2,6 +2,7 @@ import ElementCreator from '../utils/element-creator.js';
 import HeaderView from './headerView.js';
 import CurrentGameIndicatorsView from './currentGameIndicators.js';
 import GameFieldView from './gameFieldView.js';
+import AssistButtonsPanelView from './assistButtonsPanel.js';
 import ControlButtonsPanelView from './controlButtonsPanel.js';
 export default class RootView extends ElementCreator {
   constructor() {
@@ -13,6 +14,7 @@ export default class RootView extends ElementCreator {
     this.currentGameIndicators = new CurrentGameIndicatorsView();
     this.gameField = new GameFieldView();
     this.controlButtonsPanel = new ControlButtonsPanelView();
+    this.assistButtonsPanel = new AssistButtonsPanelView();
   }
   createView() {
     const main = this.getElement();
@@ -25,5 +27,7 @@ export default class RootView extends ElementCreator {
     main.append(gameFieldView);
     const controlButtonsPanelView = this.controlButtonsPanel.createView();
     main.append(controlButtonsPanelView);
+    const assistButtonsPanelView = this.assistButtonsPanel.createView();
+    main.append(assistButtonsPanelView);
   }
 }

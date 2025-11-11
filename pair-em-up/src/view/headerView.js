@@ -20,10 +20,31 @@ export default class HeaderView extends ElementCreator {
     const gitLink = new ElementCreator({
       tag: 'a',
       classNames: ['git-link'],
-      textContent: 'by Swetlana Ang',
-      attributesNames: [['href', 'https://github.com/swetlanaang']],
+      textContent: 'by @SwetlanaAng',
+      attributesNames: [
+        ['href', 'https://github.com/swetlanaang'],
+        ['target', '_blank'],
+      ],
     });
 
+    headingBox.addInnerElement(heading);
+    headingBox.addInnerElement(gitLink);
+
+    const controlsBox = new ElementCreator({
+      tag: 'div',
+      classNames: ['controls-box'],
+    });
+
+    const gameModeWrapper = new ElementCreator({
+      tag: 'div',
+      classNames: ['select-wrapper'],
+    });
+    const gameModeLabel = new ElementCreator({
+      tag: 'label',
+      classNames: ['select-label'],
+      textContent: 'Game mode',
+      attributesNames: [['for', 'game-mode']],
+    });
     const modeSelect = new ElementCreator({
       tag: 'select',
       classNames: ['mode-select'],
@@ -51,6 +72,17 @@ export default class HeaderView extends ElementCreator {
       textContent: 'Chaotic',
     });
 
+    modeSelect.addInnerElement(classicOption);
+    modeSelect.addInnerElement(randomOption);
+    modeSelect.addInnerElement(chaoticOption);
+
+    gameModeWrapper.addInnerElement(gameModeLabel);
+    gameModeWrapper.addInnerElement(modeSelect);
+
+    const settingsWrapper = new ElementCreator({
+      tag: 'div',
+      classNames: ['select-wrapper'],
+    });
     const settingsSelect = new ElementCreator({
       tag: 'select',
       classNames: ['settings-select'],
@@ -59,31 +91,39 @@ export default class HeaderView extends ElementCreator {
         ['name', 'settings'],
       ],
     });
+    const settingsTitleOption = new ElementCreator({
+      tag: 'option',
+      attributesNames: [
+        ['value', ''],
+        ['disabled', ''],
+        ['selected', ''],
+      ],
+      textContent: 'Settings',
+    });
+
     const audioOption = new ElementCreator({
       tag: 'option',
       attributesNames: [['value', 'audio']],
-      textContent: 'audio',
+      textContent: 'Audio',
     });
 
     const themeOption = new ElementCreator({
       tag: 'option',
       attributesNames: [['value', 'theme']],
-      textContent: 'theme',
+      textContent: 'Theme',
     });
 
+    settingsSelect.addInnerElement(settingsTitleOption);
     settingsSelect.addInnerElement(audioOption);
     settingsSelect.addInnerElement(themeOption);
 
-    modeSelect.addInnerElement(classicOption);
-    modeSelect.addInnerElement(randomOption);
-    modeSelect.addInnerElement(chaoticOption);
+    settingsWrapper.addInnerElement(settingsSelect);
 
-    headingBox.addInnerElement(heading);
-    headingBox.addInnerElement(gitLink);
-
+    controlsBox.addInnerElement(settingsWrapper);
+    controlsBox.addInnerElement(gameModeWrapper);
     header.append(headingBox.getElement());
-    header.append(modeSelect.getElement());
-    header.append(settingsSelect.getElement());
+    header.append(controlsBox.getElement());
+
     return header;
   }
 }
