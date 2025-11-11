@@ -1,38 +1,38 @@
 body {
-    margin: 0;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  }
-  .game-field {
-    width: 100%;
-    padding: 20px;
-  }
-  
-  .grid-container {
-    display: grid;
-    grid-template-columns: repeat(9, 1fr); /* 9 колонок одинаковой ширины */
-    gap: 8px; /* Расстояние между клеточками */
-  }
-  
-  .grid-row {
-    display: contents; /* Строка не создает отдельный блок, только группирует */
-  }
-  
-  .grid-cell {
-    aspect-ratio: 1; /* Квадратные клеточки */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f0f0f0;
-    border: 2px solid #ccc;
-    border-radius: 4px;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  
-  .grid-cell:hover {
-    background-color: #e0e0e0;
-    border-color: #999;
-  }
+  margin: 0;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+.game-field {
+  width: 100%;
+  padding: 20px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr); /* 9 колонок одинаковой ширины */
+  gap: 8px; /* Расстояние между клеточками */
+}
+
+.grid-row {
+  display: contents; /* Строка не создает отдельный блок, только группирует */
+}
+
+.grid-cell {
+  aspect-ratio: 1; /* Квадратные клеточки */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.grid-cell:hover {
+  background-color: #e0e0e0;
+  border-color: #999;
+}

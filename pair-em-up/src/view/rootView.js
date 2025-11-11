@@ -1,16 +1,18 @@
-import ElementCreator from "../utils/element-creator.js";
-import HeaderView from "./headerView.js";
-import CurrentGameIndicatorsView from "./currentGameIndicators.js";
-import GameFieldView from "./gameFieldView.js";
+import ElementCreator from '../utils/element-creator.js';
+import HeaderView from './headerView.js';
+import CurrentGameIndicatorsView from './currentGameIndicators.js';
+import GameFieldView from './gameFieldView.js';
+import ControlButtonsPanelView from './controlButtonsPanel.js';
 export default class RootView extends ElementCreator {
   constructor() {
     super({
-      tag: "div",
-      classNames: ["root-view"],
+      tag: 'div',
+      classNames: ['root-view'],
     });
     this.header = new HeaderView();
     this.currentGameIndicators = new CurrentGameIndicatorsView();
     this.gameField = new GameFieldView();
+    this.controlButtonsPanel = new ControlButtonsPanelView();
   }
   createView() {
     const main = this.getElement();
@@ -21,5 +23,7 @@ export default class RootView extends ElementCreator {
     main.append(currentGameIndicatorsView);
     const gameFieldView = this.gameField.createView();
     main.append(gameFieldView);
+    const controlButtonsPanelView = this.controlButtonsPanel.createView();
+    main.append(controlButtonsPanelView);
   }
 }
