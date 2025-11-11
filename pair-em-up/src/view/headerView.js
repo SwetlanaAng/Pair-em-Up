@@ -1,10 +1,17 @@
 import ElementCreator from '../utils/element-creator.js';
+
 export default class HeaderView extends ElementCreator {
   constructor() {
     super({
       tag: 'header',
       classNames: ['header'],
     });
+    this.gameMode = 'classic';
+    this.onSelectHandler = null;
+  }
+
+  onSelect(handler) {
+    this.onSelectHandler = handler;
   }
   createView() {
     const header = this.getElement();
@@ -52,6 +59,10 @@ export default class HeaderView extends ElementCreator {
         ['id', 'game-mode'],
         ['name', 'game-mode'],
       ],
+      callback: (event) => {
+        this.onSelectHandler?.(event.target.value);
+      },
+      eventName: 'change',
     });
 
     const classicOption = new ElementCreator({

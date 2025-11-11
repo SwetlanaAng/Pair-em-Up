@@ -7,20 +7,15 @@ export default class GameFieldView extends ElementCreator {
       classNames: ['game-field'],
     });
   }
-
-  createView() {
+  
+  createView(gameFieldData) {
     const gameField = this.getElement();
     const gridContainer = new ElementCreator({
       tag: 'div',
       classNames: ['grid-container'],
     });
-    const initialData = [
-      [1, 2, 3, 4, 5, 6, 7, 8, 9],
-      [1, 1, 1, 2, 1, 3, 1, 4, 1],
-      [5, 1, 6, 1, 7, 1, 8, 1, 9],
-    ];
 
-    initialData.forEach((row, rowIndex) => {
+    gameFieldData.forEach((row, rowIndex) => {
       const rowElement = new ElementCreator({
         tag: 'div',
         classNames: ['grid-row'],
@@ -46,5 +41,10 @@ export default class GameFieldView extends ElementCreator {
 
     gameField.append(gridContainer.getElement());
     return gameField;
+  }
+  updateView(gameFieldData){
+    const gameField = this.getElement();
+    gameField.innerHTML = '';
+    this.createView(gameFieldData);
   }
 }

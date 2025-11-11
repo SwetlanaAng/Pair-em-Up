@@ -1,4 +1,6 @@
 import RootView from './view/rootView.js';
+import GameController from './controller/gameController.js';
 
-const view = new RootView();
-view.createView();
+const gameController = new GameController();
+const rootView = new RootView(gameController);
+rootView.createView();
