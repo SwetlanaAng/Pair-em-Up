@@ -1,1 +1,5 @@
-import ElementCreator from './utils/element-creator.js';
+import RootView from "./view/rootView.js";
+
+
+const view = new RootView();
+view.createView();
