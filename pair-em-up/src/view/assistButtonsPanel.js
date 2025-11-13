@@ -5,8 +5,10 @@ export default class AssistButtonsPanelView extends ElementCreator {
       tag: 'div',
       classNames: ['assist-buttons-panel'],
     });
+    this.gameController = null;
   }
-  createView() {
+  createView(gameController) {
+    this.gameController = gameController;
     const assistButtons = this.getElement();
     assistButtons.innerHTML = '';
     const hintButton = new ElementCreator({
@@ -20,6 +22,9 @@ export default class AssistButtonsPanelView extends ElementCreator {
       classNames: ['btn', 'add-numbers'],
       attrubutesNames: [['type', 'button']],
       textContent: 'Add Numbers',
+      callback: () => {
+        this.gameController.addNumbersToGameField();
+      },
     });
     const revertButton = new ElementCreator({
       tag: 'button',

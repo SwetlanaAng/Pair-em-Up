@@ -68,4 +68,9 @@ export default class GameController {
     const gameFieldData = this.gameModel.getGameField();
     return this.gameFieldView.createView(gameFieldData);
   }
+  addNumbersToGameField() {
+    this.gameModel.addNumbersToGameField();
+    const updatedGameFieldData = this.gameModel.getGameField();
+    this.gameFieldView.updateView(updatedGameFieldData);
+  }
 }

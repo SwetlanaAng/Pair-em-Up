@@ -240,12 +240,30 @@ export default class GameModel {
       this.gameField[row1][col1] = 0;
       this.gameField[row2][col2] = 0;
       this.score += this.getPoints(val1, val2);
-      if (this.score >= 3) {
+      if (this.score >= 6) {
         //поменять на 100
         this.gameState = 'win';
         this.score = 0;
       }
       return true;
     } else return false;
+  }
+  addNumbersToGameField() {
+    const currentGameField = this.gameField.flat();
+    const leftNumbers = currentGameField.filter((cell) => cell !== 0);
+
+    if (this.gameMode === 'classic') {
+      this.getGameFieldFromArray(currentGameField.concat(leftNumbers));
+    } else if (this.gameMode === 'random') {
+      this.getGameFieldFromArray(
+        currentGameField.concat(leftNumbers.sort(() => Math.random() - 0.5))
+      );
+    } else if (this.gameMode === 'chaotic') {
+      const arr = Array.from(
+        { length: leftNumbers.length },
+        () => Math.floor(Math.random() * 9) + 1
+      );
+      this.getGameFieldFromArray(currentGameField.concat(arr));
+    }
   }
 }

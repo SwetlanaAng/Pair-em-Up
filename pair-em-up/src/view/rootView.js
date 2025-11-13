@@ -32,7 +32,7 @@ export default class RootView extends ElementCreator {
     main.append(gameFieldView);
     const controlButtonsPanelView = this.controlButtonsPanel.createView();
     main.append(controlButtonsPanelView);
-    const assistButtonsPanelView = this.assistButtonsPanel.createView();
+    const assistButtonsPanelView = this.assistButtonsPanel.createView(this.gameController);
     main.append(assistButtonsPanelView);
   }
 
