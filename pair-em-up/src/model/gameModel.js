@@ -194,7 +194,7 @@ export default class GameModel {
             } else {
                 const minRow = Math.min(row1, row2);
                 const maxRow = Math.max(row1, row2);
-                for(let i = minRow; i <= maxRow; i++){
+                for(let i = minRow+1; i < maxRow; i++){
                     if(this.gameField[i][col1] !== 0){
                         return false;
                     }
@@ -207,7 +207,7 @@ export default class GameModel {
             } else {
                 const minCol = Math.min(col1, col2);
                 const maxCol = Math.max(col1, col2);
-                for(let i = minCol; i <= maxCol; i++){
+                for(let i = minCol+ 1; i < maxCol; i++){
                     if(this.gameField[row1][i] !== 0){
                         return false;
                     }
@@ -223,11 +223,12 @@ export default class GameModel {
             } else {
                 const minIndex = Math.min(index1, index2);
                 const maxIndex = Math.max(index1, index2);
-                for(let i = minIndex; i <= maxIndex; i++){
+                for(let i = minIndex+1; i < maxIndex; i++){
                 if(flatGameField[i] !== 0){
                     return false;
                 }
             }
+            return true;
             }
             
             return true;
