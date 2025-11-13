@@ -8,6 +8,7 @@ export default class ControlButtonsPanelView extends ElementCreator {
   }
   createView() {
     const controlButtons = this.getElement();
+    controlButtons.innerHTML = '';
     const resetButton = new ElementCreator({
       tag: 'button',
       classNames: ['btn', 'reset'],

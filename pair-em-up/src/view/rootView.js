@@ -3,21 +3,30 @@ import AssistButtonsPanelView from './assistButtonsPanel.js';
 import ControlButtonsPanelView from './controlButtonsPanel.js';
 
 export default class RootView extends ElementCreator {
-  constructor(gameController) {
+  constructor() {
     super({
       tag: 'div',
       classNames: ['root-view'],
     });
-    this.gameController = gameController;
+    this.gameController = null;
     this.controlButtonsPanel = new ControlButtonsPanelView();
     this.assistButtonsPanel = new AssistButtonsPanelView();
   }
+
+  setGameController(gameController) {
+    this.gameController = gameController;
+  }
+
   createView() {
     const main = this.getElement();
-    document.body.append(main);
+    if (!main.parentNode) {
+      document.body.append(main);
+    }
     const headerView = this.gameController.getHeaderView().createView();
     main.append(headerView);
-    const currentGameIndicatorsView = this.gameController.getCurrentGameIndicatorsView().createView();
+    const currentGameIndicatorsView = this.gameController
+      .getCurrentGameIndicatorsView()
+      .createView();
     main.append(currentGameIndicatorsView);
     const gameFieldView = this.gameController.init();
     main.append(gameFieldView);
@@ -25,5 +34,41 @@ export default class RootView extends ElementCreator {
     main.append(controlButtonsPanelView);
     const assistButtonsPanelView = this.assistButtonsPanel.createView();
     main.append(assistButtonsPanelView);
+  }
+
+  createModal(state) {
+    const main = this.getElement();
+    const modal = new ElementCreator({
+      tag: 'div',
+      classNames: ['modal-bg'],
+    });
+    const modalContent = new ElementCreator({
+      tag: 'div',
+      classNames: ['modal-content'],
+    });
+    const modalInfo = new ElementCreator({
+      tag: 'h2',
+      classNames: ['modal-info'],
+      textContent: state === 'win' ? 'You win!' : 'You lose!',
+    });
+    const modalButton = new ElementCreator({
+      tag: 'button',
+      classNames: ['modal-button', 'btn'],
+      textContent: 'Play again',
+      callback: () => {
+        this.updateRootView();
+      },
+    });
+    modalContent.addInnerElement(modalInfo);
+    modalContent.addInnerElement(modalButton);
+    modal.addInnerElement(modalContent);
+    main.append(modal.getElement());
+  }
+  updateRootView() {
+    const main = this.getElement();
+    this.gameController.updateGameFieldData();
+    this.gameController.setGameState('playing');
+    main.innerHTML = '';
+    this.createView();
   }
 }

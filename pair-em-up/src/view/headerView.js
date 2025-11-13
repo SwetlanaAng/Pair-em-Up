@@ -15,6 +15,7 @@ export default class HeaderView extends ElementCreator {
   }
   createView() {
     const header = this.getElement();
+    header.innerHTML = '';
     const headingBox = new ElementCreator({
       tag: 'div',
       classNames: ['heading-box'],

@@ -1,14 +1,16 @@
 import ElementCreator from '../utils/element-creator.js';
+
 export default class CurrentGameIndicatorsView extends ElementCreator {
-  constructor() {
+  constructor(rootView) {
     super({
       tag: 'div',
       classNames: ['indicators-display'],
     });
-    
+    this.rootView = rootView;
   }
   createView(points = 0) {
     const currentGameIndicators = this.getElement();
+    currentGameIndicators.innerHTML = '';
     const scoreDisplay = new ElementCreator({
       tag: 'div',
       classNames: ['score-display'],
@@ -54,15 +56,18 @@ export default class CurrentGameIndicatorsView extends ElementCreator {
     currentGameIndicators.append(timerDisplay.getElement());
     return currentGameIndicators;
   }
-  updateView(points = 0) {
+  updateView(points = 0, gameState) {
     const currentGameIndicators = this.getElement();
     const currentScoreElement = currentGameIndicators.querySelector('.current-score');
-    
+
     if (!currentScoreElement) {
       this.createView(points);
       return;
     }
-    
+
     currentScoreElement.textContent = `${points}`;
+    if (gameState === 'win') {
+      this.rootView.createModal('win');
+    }
   }
 }

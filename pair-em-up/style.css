@@ -111,7 +111,8 @@ body {
   background-color: #f0f0f0;
 }
 
-.score-display, .indicators-display {
+.score-display,
+.indicators-display {
   padding: 20px;
   display: flex;
   justify-content: space-between;
@@ -264,12 +265,14 @@ body {
   background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
 }
 
-.btn.continue {
+.btn.continue,
+.modal-button {
   background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
   color: white;
 }
 
-.btn.continue:hover {
+.btn.continue:hover,
+.modal-button:hover {
   background: linear-gradient(135deg, #38f9d7 0%, #43e97b 100%);
 }
 
@@ -317,7 +320,32 @@ body {
 .btn.eraser:hover {
   background: linear-gradient(135deg, #fcb69f 0%, #ffecd2 100%);
 }
-
+.modal-bg {
+  width: 100vw;
+  height: 100vh;
+  background: rgba(41, 41, 41, 0.6);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal-content {
+  width: 500px;
+  height: 356px;
+  background: #ffffff;
+  padding: 60px;
+  z-index: 6;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 7px;
+}
 @media (max-width: 768px) {
   .header {
     flex-direction: column;

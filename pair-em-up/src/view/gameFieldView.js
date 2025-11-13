@@ -58,7 +58,7 @@ export default class GameFieldView extends ElementCreator {
         const [row2, col2] = secondId.split('-').map(Number);
 
         const isValid = this.gameController.handleCellPairSelection(row1, col1, row2, col2);
-        
+
         if (isValid) {
           this.playDoneSound();
           this.selectedCells = [];
@@ -79,9 +79,10 @@ export default class GameFieldView extends ElementCreator {
       }
     }
   }
-  
+
   createView(gameFieldData) {
     const gameField = this.getElement();
+    gameField.innerHTML = '';
     const gridContainer = new ElementCreator({
       tag: 'div',
       classNames: ['grid-container'],
@@ -106,7 +107,9 @@ export default class GameFieldView extends ElementCreator {
             ['data-col', cellIndex.toString()],
           ],
           callback: (event) => {
-            this.handleCellClick(event);
+            if (cellValue !== 0) {
+              this.handleCellClick(event);
+            }
           },
         });
 

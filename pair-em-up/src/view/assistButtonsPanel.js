@@ -8,6 +8,7 @@ export default class AssistButtonsPanelView extends ElementCreator {
   }
   createView() {
     const assistButtons = this.getElement();
+    assistButtons.innerHTML = '';
     const hintButton = new ElementCreator({
       tag: 'button',
       classNames: ['btn', 'hint'],
