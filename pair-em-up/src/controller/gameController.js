@@ -1,12 +1,14 @@
 import GameModel from '../model/gameModel.js';
 import GameFieldView from '../view/gameFieldView.js';
 import HeaderView from '../view/headerView.js';
+import CurrentGameIndicatorsView from '../view/currentGameIndicators.js';
 
 export default class GameController {
   constructor() {
     this.gameModel = new GameModel();
     this.gameFieldView = new GameFieldView(this);
     this.headerView = new HeaderView();
+    this.currentGameIndicatorsView = new CurrentGameIndicatorsView();
   }
 
   init() {
@@ -33,6 +35,7 @@ export default class GameController {
     if (isValid) {
       const updatedGameFieldData = this.gameModel.getGameField();
       this.gameFieldView.updateView(updatedGameFieldData);
+      this.currentGameIndicatorsView.updateView(isValid);
     }
     
     return isValid;
@@ -48,6 +51,10 @@ export default class GameController {
 
   getGameModel() {
     return this.gameModel;
+  }
+
+  getCurrentGameIndicatorsView() {
+    return this.currentGameIndicatorsView;
   }
 
   updateView() {

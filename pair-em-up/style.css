@@ -111,7 +111,7 @@ body {
   background-color: #f0f0f0;
 }
 
-.score-display {
+.score-display, .indicators-display {
   padding: 20px;
   display: flex;
   justify-content: space-between;
@@ -120,7 +120,7 @@ body {
   gap: 20px;
 }
 
-.score-display > .score-display {
+.indicators-display > .score-display {
   display: flex;
   align-items: baseline;
   gap: 5px;

@@ -9,6 +9,7 @@ export default class GameModel {
     this.maxRows = 50;
     this.columns = 9;
     this.gameMode = 'classic';
+    this.score = 0;
   }
   getGameField() {
     return this.gameField;
@@ -239,7 +240,7 @@ export default class GameModel {
     if(this.checkValidPair(row1, col1, row2, col2, val1, val2)){
         this.gameField[row1][col1] = 0;
         this.gameField[row2][col2] = 0;
-        return true;
+        return this.score +=this.getPoints(val1, val2);
     } else return false;
  }
 }
