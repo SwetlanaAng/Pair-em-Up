@@ -8,16 +8,10 @@ export default class GameModel {
     ];
     this.maxRows = 50;
     this.columns = 9;
-    this.gameMode = 'classic'
+    this.gameMode = 'classic';
   }
   getGameField() {
-    if(this.gameMode === 'classic'){
-      return this.getClassicGameField();
-    } else if(this.gameMode === 'chaotic'){
-      return this.getChaoticGameField();
-    } else if(this.gameMode === 'random'){
-      return this.getRandomGameField();
-    }
+    return this.gameField;
   }
 
   getRowsCount() {
@@ -26,6 +20,13 @@ export default class GameModel {
 
   setGameMode(gameMode){
     this.gameMode = gameMode;
+    if(this.gameMode === 'classic'){
+      this.gameField = this.getClassicGameField();
+    } else if(this.gameMode === 'chaotic'){
+      this.gameField = this.getChaoticGameField();
+    } else if(this.gameMode === 'random'){
+      this.gameField = this.getRandomGameField();
+    }
   }
 
   getGameFieldFromArray(array){
@@ -43,9 +44,9 @@ export default class GameModel {
     })
     for(let i = 0; i < interimArray.length; i++){
         chankArray = interimArray.slice(i, i + 9);
-        if(chankArray.length<9){
+        /* if(chankArray.length<9){
             chankArray.push(...Array(9 - chankArray.length).fill(0));
-        }
+        } */
         this.gameField.push(chankArray);
         i = i+8;
     }
@@ -88,5 +89,157 @@ export default class GameModel {
     }
     return false;
   }
+  getPoints(val1, val2) {
+    if(val1 === 5 && val2 ===5){
+        return 3;
+    }
+    else if(val1 === val2){
+        return 1;
+    } else if(val1 + val2 ===10){
+        return 2;
+    } else return false;
+  }
+  isValidCell(array,row,col) {
+    if(array[row][col] === 0) return false;
+    if(row>0){ //up
+        if(this.getPoints(array[row][col], array[row-1][col])) return true;
+        if(array[row-1][col] === 0) {
+            let newRow = row;
+            while(newRow>0 && array[newRow-1][col] === 0) newRow--;
+            if(this.getPoints(array[row][col], array[newRow][col])) return true;
+        }
+    }
+    if(row<array.length-1){ //down
+        if(this.getPoints(array[row][col], array[row+1][col])) return true;
+        if(array[row+1][col] === 0) {
+            let newRow = row;
+            while(newRow<array.length-1 && array[newRow+1][col] === 0) newRow--;
+            if(this.getPoints(array[row][col], array[newRow+1][col])) return true;
+        }
+    }
+    if(col>0){ //left
+        if(this.getPoints(array[row][col], array[row][col-1])) return true;
+        if(array[row][col-1] === 0) {
+            let newCol = col;
+            let newRow = row;
+            while(newCol>0 && array[newRow][newCol-1] === 0) {
+                newCol--;
+                if(newCol === 0) {
+                    newRow--;
+                    if(newRow < 0) break;
+                    newCol = 9;
+                };
+                
+            } 
+            if(this.getPoints(array[row][col], array[row][newCol])) return true;
+        }
+    } else{
+        let newCol = 9;
+        if(this.getPoints(array[row][col], array[row][newCol])) return true;
+        if(array[row][newCol] === 0) {
+            let newRow = row;
+            while(newCol>0 && array[newRow][newCol-1] === 0) {
+                newCol--;
+                if(newCol === 0) {
+                    newRow--;
+                    if(newRow < 0) break;
+                    newCol = 9;
+                };
+                
+            } 
+            if(this.getPoints(array[row][col], array[row][newCol])) return true;
+        }
+    }
+    
+    if(col<array[row].length-1){ //right
+        if(this.getPoints(array[row][col], array[row][col+1])) return true;
+        if(array[row][col+1] === 0) {
+            let newCol = col;
+            let newRow = row;
+            while(newCol<array[row].length-1 && array[newRow][newCol+1] === 0) {
+                newCol++;
+                if(newCol === 9) {
+                    newRow++;
+                }
+            }
+        }
+    } else {
+        if(this.getPoints(array[row][col], array[row+1][0])) return true;
+        if(array[row+1][0] === 0) {
+            let newRow = row;
+            while(newRow<array.length-1 && array[newRow+1][0] === 0) newRow++;
+            if(this.getPoints(array[row][col], array[newRow+1][0])) return true;
+        }
+    }
+    
+    return false;
+  }
+  getNumberValidPairs(array){
+    let numberValidPairs = 0;
+    for(let i = 0; i < array.length; i++){
+        for(let j = 0; j < array[i].length; j++){
+            if(this.isValidCell(array, i , j)){
+                numberValidPairs++;
+            }
+        }
+    }
+    return numberValidPairs/2;
+  }
+  checkValidPair(row1, col1, row2, col2, val1, val2){
+    if(this.getPoints(val1, val2)){
+        
+        if(col1 === col2){
+            if(Math.abs(row1 - row2) ===1){
+                return true;
+            } else {
+                const minRow = Math.min(row1, row2);
+                const maxRow = Math.max(row1, row2);
+                for(let i = minRow; i <= maxRow; i++){
+                    if(this.gameField[i][col1] !== 0){
+                        return false;
+                    }
+                }
+                return true;
+            }
+        } else if (row1 === row2){
+            if(Math.abs(col1 - col2) ===1){
+                return true;
+            } else {
+                const minCol = Math.min(col1, col2);
+                const maxCol = Math.max(col1, col2);
+                for(let i = minCol; i <= maxCol; i++){
+                    if(this.gameField[row1][i] !== 0){
+                        return false;
+                    }
+                }
+                return true;
+            }
+        } else {
+            const flatGameField = this.gameField.flat();
+            const index1 = row1 * this.columns + col1;
+            const index2 = row2 * this.columns + col2;
+            if(Math.abs(index1 - index2) ===1){
+                return true;
+            } else {
+                const minIndex = Math.min(index1, index2);
+                const maxIndex = Math.max(index1, index2);
+                for(let i = minIndex; i <= maxIndex; i++){
+                if(flatGameField[i] !== 0){
+                    return false;
+                }
+            }
+            }
+            
+            return true;
+        }
+    } else return false;
+  }
+ onCheckedValidPair(row1, col1, row2, col2, val1, val2){
+    if(this.checkValidPair(row1, col1, row2, col2, val1, val2)){
+        this.gameField[row1][col1] = 0;
+        this.gameField[row2][col2] = 0;
+        return true;
+    } else return false;
+ }
 }
 
