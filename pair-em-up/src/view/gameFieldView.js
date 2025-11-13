@@ -9,12 +9,32 @@ export default class GameFieldView extends ElementCreator {
     this.gameController = gameController;
     this.selectedCells = [];
     this.maxSelected = 2;
-    this.audio = new Audio('./assets/sounds/69880c1f5e57698.mp3');
+    this.clickAudio = new Audio('./assets/sounds/click.mp3');
+    this.mistakeAudio = new Audio('./assets/sounds/mistake.mp3');
+    this.doneAudio = new Audio('./assets/sounds/done.mp3');
+  }
+  stopAllSounds() {
+    this.clickAudio.pause();
+    this.clickAudio.currentTime = 0;
+    this.mistakeAudio.pause();
+    this.mistakeAudio.currentTime = 0;
+    this.doneAudio.pause();
+    this.doneAudio.currentTime = 0;
   }
 
-  playSound() {
-    this.audio.currentTime = 0;
-    this.audio.play();
+  playClickSound() {
+    this.stopAllSounds();
+    this.clickAudio.play();
+  }
+
+  playMistakeSound() {
+    this.stopAllSounds();
+    this.mistakeAudio.play();
+  }
+
+  playDoneSound() {
+    this.stopAllSounds();
+    this.doneAudio.play();
   }
 
   handleCellClick(event) {
@@ -24,9 +44,8 @@ export default class GameFieldView extends ElementCreator {
     const cellId = `${row}-${col}`;
     const isSelected = cell.classList.contains('selected');
 
-    this.playSound();
-
     if (isSelected) {
+      this.playClickSound();
       cell.classList.remove('selected');
       this.selectedCells = this.selectedCells.filter((id) => id !== cellId);
     } else {
@@ -41,18 +60,22 @@ export default class GameFieldView extends ElementCreator {
         const isValid = this.gameController.handleCellPairSelection(row1, col1, row2, col2);
         
         if (isValid) {
+          this.playDoneSound();
           this.selectedCells = [];
         } else {
+          this.playMistakeSound();
           const firstCell = this.getElement().querySelector(
             `[data-row="${row1}"][data-col="${col1}"]`
           );
           const secondCell = this.getElement().querySelector(
             `[data-row="${row2}"][data-col="${col2}"]`
           );
-          firstCell.classList.remove('selected');
-          secondCell.classList.remove('selected');
+          if (firstCell) firstCell.classList.remove('selected');
+          if (secondCell) secondCell.classList.remove('selected');
           this.selectedCells = [];
         }
+      } else {
+        this.playClickSound();
       }
     }
   }
