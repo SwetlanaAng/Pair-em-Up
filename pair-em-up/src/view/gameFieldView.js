@@ -60,6 +60,7 @@ export default class GameFieldView extends ElementCreator {
         const isValid = this.gameController.handleCellPairSelection(row1, col1, row2, col2);
 
         if (isValid) {
+          this.gameController.assistButtonsPanel.updateView(this.gameController);
           this.playDoneSound();
           this.selectedCells = [];
         } else {

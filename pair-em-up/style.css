@@ -335,13 +335,13 @@ body {
   align-items: center;
 }
 .btn.disabled {
-background: linear-gradient(135deg, #8aa1a2 0%, #485d6f 100%);
+  background: linear-gradient(135deg, #8aa1a2 0%, #485d6f 100%);
   cursor: not-allowed;
 }
-.btn.disabled:hover{
-    background: linear-gradient(135deg, #8aa1a2 0%, #485d6f 100%);
-    cursor: not-allowed;
-    transform: none;
+.btn.disabled:hover {
+  background: linear-gradient(135deg, #8aa1a2 0%, #485d6f 100%);
+  cursor: not-allowed;
+  transform: none;
   box-shadow: none;
 }
 .modal-content {

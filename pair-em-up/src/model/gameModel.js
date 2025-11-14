@@ -48,7 +48,7 @@ export default class GameModel {
     for (let i = 0; i < interimArray.length; i++) {
       chankArray = interimArray.slice(i, i + 9);
       this.gameField.push(chankArray);
-      if(this.gameField.length > this.maxRows){
+      if (this.gameField.length > this.maxRows) {
         this.gameState = 'lose';
         this.score = 0;
         this.addNumberCount = 10;
@@ -102,7 +102,7 @@ export default class GameModel {
       return 2;
     } else return false;
   }
-  isValidCell(array, row, col) {
+  /*   isValidCell(array, row, col) {
     if (array[row][col] === 0) return false;
     if (row > 0) {
       //up
@@ -178,19 +178,36 @@ export default class GameModel {
     }
 
     return false;
-  }
+  } */
   getNumberValidPairs(array) {
     let numberValidPairs = 0;
-    for (let i = 0; i < array.length; i++) {
-      for (let j = 0; j < array[i].length; j++) {
-        if (this.isValidCell(array, i, j)) {
+    const flatArray = array.flat();
+
+    for (let i = 0; i < flatArray.length; i++) {
+      if (flatArray[i] === 0) continue;
+
+      const row1 = Math.floor(i / this.columns);
+      const col1 = i % this.columns;
+      const val1 = flatArray[i];
+
+      for (let j = i + 1; j < flatArray.length; j++) {
+        if (flatArray[j] === 0) continue;
+
+        const row2 = Math.floor(j / this.columns);
+        const col2 = j % this.columns;
+        const val2 = flatArray[j];
+
+        if (this.checkValidPair(row1, col1, row2, col2, val1, val2, array)) {
           numberValidPairs++;
         }
       }
     }
-    return numberValidPairs / 2;
+
+    return numberValidPairs;
   }
-  checkValidPair(row1, col1, row2, col2, val1, val2) {
+  checkValidPair(row1, col1, row2, col2, val1, val2, gameFieldArray = null) {
+    const field = gameFieldArray || this.gameField;
+
     if (this.getPoints(val1, val2)) {
       if (col1 === col2) {
         if (Math.abs(row1 - row2) === 1) {
@@ -199,7 +216,7 @@ export default class GameModel {
           const minRow = Math.min(row1, row2);
           const maxRow = Math.max(row1, row2);
           for (let i = minRow + 1; i < maxRow; i++) {
-            if (this.gameField[i][col1] !== 0) {
+            if (field[i][col1] !== 0) {
               return false;
             }
           }
@@ -212,14 +229,14 @@ export default class GameModel {
           const minCol = Math.min(col1, col2);
           const maxCol = Math.max(col1, col2);
           for (let i = minCol + 1; i < maxCol; i++) {
-            if (this.gameField[row1][i] !== 0) {
+            if (field[row1][i] !== 0) {
               return false;
             }
           }
           return true;
         }
       } else {
-        const flatGameField = this.gameField.flat();
+        const flatGameField = field.flat();
         const index1 = row1 * this.columns + col1;
         const index2 = row2 * this.columns + col2;
         const diffIndex = Math.abs(index1 - index2);
@@ -244,7 +261,7 @@ export default class GameModel {
       this.gameField[row1][col1] = 0;
       this.gameField[row2][col2] = 0;
       this.score += this.getPoints(val1, val2);
-      if (this.score >= 6) {
+      if (this.score >= 10) {
         //поменять на 100
         this.gameState = 'win';
         this.score = 0;
@@ -262,7 +279,6 @@ export default class GameModel {
       this.getGameFieldFromArray(currentGameField.concat(leftNumbers));
     } else if (this.gameMode === 'random') {
       this.getGameFieldFromArray(
-
         currentGameField.concat(leftNumbers.sort(() => Math.random() - 0.5))
       );
     } else if (this.gameMode === 'chaotic') {

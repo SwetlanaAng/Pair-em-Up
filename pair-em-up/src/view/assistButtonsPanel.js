@@ -15,7 +15,7 @@ export default class AssistButtonsPanelView extends ElementCreator {
       tag: 'button',
       classNames: ['btn', 'hint'],
       attrubutesNames: [['type', 'button']],
-      textContent: 'hint',
+      textContent: `hint (${this.gameController.getValidPairsCount() > 5 ? '5+' : this.gameController.getValidPairsCount()})`,
     });
     const addNumbersButton = new ElementCreator({
       tag: 'button',
@@ -23,16 +23,16 @@ export default class AssistButtonsPanelView extends ElementCreator {
       attrubutesNames: [['type', 'button']],
       textContent: `Add Numbers (${this.gameController.gameModel.addNumberCount})`,
       callback: (event) => {
-        
         this.gameController.addNumbersToGameField();
         event.target.textContent = `Add Numbers (${this.gameController.gameModel.addNumberCount})`;
-        if(this.gameController.gameModel.addNumberCount === 0){
+        hintButton.getElement().textContent = `hint (
+        ${this.gameController.getValidPairsCount() > 5 ? '5+' : this.gameController.getValidPairsCount()})`;
+        if (this.gameController.gameModel.addNumberCount === 0) {
           event.target.disabled = true;
           event.target.classList.add('disabled');
         }
-        if(this.gameController.gameModel.gameState === 'lose'){
+        if (this.gameController.gameModel.gameState === 'lose') {
           this.gameController.rootView.createModal('lose');
-      
         }
       },
     });
@@ -62,5 +62,8 @@ export default class AssistButtonsPanelView extends ElementCreator {
     assistButtons.append(eraserButton.getElement());
 
     return assistButtons;
+  }
+  updateView(controller) {
+    this.createView(controller);
   }
 }

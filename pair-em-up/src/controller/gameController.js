@@ -10,11 +10,11 @@ export default class GameController {
     this.headerView = new HeaderView();
     this.rootView = rootView;
     this.currentGameIndicatorsView = new CurrentGameIndicatorsView(rootView);
+    this.assistButtonsPanel = this.rootView.assistButtonsPanel;
   }
 
   init() {
     const gameFieldData = this.gameModel.getGameField();
-
     this.setupHeaderHandler();
 
     return this.gameFieldView.createView(gameFieldData);
@@ -25,6 +25,7 @@ export default class GameController {
       this.gameModel.setGameMode(gameMode);
       this.gameModel.score = 0;
       const updatedGameFieldData = this.gameModel.getGameField();
+      this.currentGameIndicatorsView.updateView(this.gameModel.score, gameMode);
       this.gameFieldView.updateView(updatedGameFieldData);
     });
   }
@@ -72,5 +73,8 @@ export default class GameController {
     this.gameModel.addNumbersToGameField();
     const updatedGameFieldData = this.gameModel.getGameField();
     this.gameFieldView.updateView(updatedGameFieldData);
+  }
+  getValidPairsCount() {
+    return this.gameModel.getNumberValidPairs(this.gameModel.gameField);
   }
 }
