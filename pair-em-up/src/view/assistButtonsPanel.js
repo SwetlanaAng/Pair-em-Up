@@ -21,9 +21,19 @@ export default class AssistButtonsPanelView extends ElementCreator {
       tag: 'button',
       classNames: ['btn', 'add-numbers'],
       attrubutesNames: [['type', 'button']],
-      textContent: 'Add Numbers',
-      callback: () => {
+      textContent: `Add Numbers (${this.gameController.gameModel.addNumberCount})`,
+      callback: (event) => {
+        
         this.gameController.addNumbersToGameField();
+        event.target.textContent = `Add Numbers (${this.gameController.gameModel.addNumberCount})`;
+        if(this.gameController.gameModel.addNumberCount === 0){
+          event.target.disabled = true;
+          event.target.classList.add('disabled');
+        }
+        if(this.gameController.gameModel.gameState === 'lose'){
+          this.gameController.rootView.createModal('lose');
+      
+        }
       },
     });
     const revertButton = new ElementCreator({

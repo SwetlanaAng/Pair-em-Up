@@ -7,6 +7,7 @@ export default class CurrentGameIndicatorsView extends ElementCreator {
       classNames: ['indicators-display'],
     });
     this.rootView = rootView;
+    this.gameController = null;
   }
   createView(points = 0) {
     const currentGameIndicators = this.getElement();

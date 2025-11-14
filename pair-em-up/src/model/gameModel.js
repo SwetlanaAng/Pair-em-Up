@@ -11,6 +11,7 @@ export default class GameModel {
     this.gameMode = 'classic';
     this.score = 0;
     this.gameState = 'playing';
+    this.addNumberCount = 10;
   }
   getGameField() {
     return this.gameField;
@@ -46,10 +47,13 @@ export default class GameModel {
     });
     for (let i = 0; i < interimArray.length; i++) {
       chankArray = interimArray.slice(i, i + 9);
-      /* if(chankArray.length<9){
-            chankArray.push(...Array(9 - chankArray.length).fill(0));
-        } */
       this.gameField.push(chankArray);
+      if(this.gameField.length > this.maxRows){
+        this.gameState = 'lose';
+        this.score = 0;
+        this.addNumberCount = 10;
+        //return ????
+      }
       i = i + 8;
     }
     return this.gameField;
@@ -244,11 +248,13 @@ export default class GameModel {
         //поменять на 100
         this.gameState = 'win';
         this.score = 0;
+        this.addNumberCount = 10;
       }
       return true;
     } else return false;
   }
   addNumbersToGameField() {
+    this.addNumberCount--;
     const currentGameField = this.gameField.flat();
     const leftNumbers = currentGameField.filter((cell) => cell !== 0);
 
@@ -256,6 +262,7 @@ export default class GameModel {
       this.getGameFieldFromArray(currentGameField.concat(leftNumbers));
     } else if (this.gameMode === 'random') {
       this.getGameFieldFromArray(
+
         currentGameField.concat(leftNumbers.sort(() => Math.random() - 0.5))
       );
     } else if (this.gameMode === 'chaotic') {
