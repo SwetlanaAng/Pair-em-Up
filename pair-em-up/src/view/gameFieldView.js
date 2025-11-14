@@ -79,6 +79,14 @@ export default class GameFieldView extends ElementCreator {
         this.playClickSound();
       }
     }
+    const eraserButton = this.gameController.getEraserButton();
+    if (this.selectedCells.length !== 1) {
+      eraserButton.disabled = true;
+      eraserButton.classList.add('disabled');
+    } else if (this.gameController.gameModel.eraserCount > 0) {
+      eraserButton.disabled = false;
+      eraserButton.classList.remove('disabled');
+    }
   }
 
   createView(gameFieldData) {

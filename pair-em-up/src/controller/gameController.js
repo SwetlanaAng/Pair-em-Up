@@ -82,4 +82,20 @@ export default class GameController {
     const updatedGameFieldData = this.gameModel.getGameField();
     this.gameFieldView.updateView(updatedGameFieldData);
   }
+  getEraserButton() {
+    return this.assistButtonsPanel.getElement().querySelector('.eraser');
+  }
+  eraseCell(row, col) {
+    this.gameModel.eraseCell(row, col);
+    const updatedGameFieldData = this.gameModel.getGameField();
+    this.gameFieldView.updateView(updatedGameFieldData);
+    //this.assistButtonsPanel.updateView(this);
+  }
+  startNewGame() {
+    this.gameModel.startNewGame();
+    /* const updatedGameFieldData = this.gameModel.getGameField(); //пока не знаю
+    this.gameFieldView.updateView(updatedGameFieldData);
+    this.currentGameIndicatorsView.updateView(this.gameModel.score, this.gameModel.gameState);
+    this.assistButtonsPanel.updateView(this); */
+  }
 }

@@ -13,6 +13,7 @@ export default class GameModel {
     this.gameState = 'playing';
     this.addNumberCount = 10;
     this.shuffleCount = 5;
+    this.eraserCount = 5;
   }
   getGameField() {
     return this.gameField;
@@ -262,7 +263,7 @@ export default class GameModel {
       this.gameField[row1][col1] = 0;
       this.gameField[row2][col2] = 0;
       this.score += this.getPoints(val1, val2);
-      if (this.score >= 10) {
+      if (this.score >= 5) {
         //поменять на 100
         this.gameState = 'win';
         this.score = 0;
@@ -293,5 +294,16 @@ export default class GameModel {
   shuffleGameField() {
     this.shuffleCount--;
     this.gameField = this.gameField.sort(() => Math.random() - 0.5);
+  }
+  eraseCell(row, col) {
+    this.eraserCount--;
+    this.gameField[row][col] = 0;
+  }
+  startNewGame() {
+    this.score = 0;
+    this.gameState = 'playing';
+    this.addNumberCount = 10;
+    this.shuffleCount = 5;
+    this.eraserCount = 5;
   }
 }

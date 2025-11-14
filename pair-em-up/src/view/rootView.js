@@ -56,6 +56,7 @@ export default class RootView extends ElementCreator {
       classNames: ['modal-button', 'btn'],
       textContent: 'Play again',
       callback: () => {
+        this.gameController.startNewGame();
         this.updateRootView();
       },
     });

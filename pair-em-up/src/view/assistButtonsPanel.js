@@ -6,9 +6,11 @@ export default class AssistButtonsPanelView extends ElementCreator {
       classNames: ['assist-buttons-panel'],
     });
     this.gameController = null;
+    //this.gameFieldView = null
   }
   createView(gameController) {
     this.gameController = gameController;
+    //this.gameFieldView = gameController.gameFieldView;
     const assistButtons = this.getElement();
     assistButtons.innerHTML = '';
     const hintButton = new ElementCreator({
@@ -60,9 +62,22 @@ export default class AssistButtonsPanelView extends ElementCreator {
     });
     const eraserButton = new ElementCreator({
       tag: 'button',
-      classNames: ['btn', 'eraser'],
+      classNames: ['btn', 'eraser', 'disabled'],
       attrubutesNames: [['type', 'button']],
-      textContent: 'Eraser',
+      textContent: `Eraser (${this.gameController.gameModel.eraserCount})`,
+      callback: (event) => {
+        const [row, col] = this.gameController.gameFieldView.selectedCells[0]
+          .split('-')
+          .map(Number);
+        this.gameController.eraseCell(row, col);
+        event.target.textContent = `Eraser (${this.gameController.gameModel.eraserCount})`;
+        hintButton.getElement().textContent = `hint (
+        ${this.gameController.getValidPairsCount() > 5 ? '5+' : this.gameController.getValidPairsCount()})`;
+        if (this.gameController.gameModel.eraserCount === 0) {
+          event.target.disabled = true;
+          event.target.classList.add('disabled');
+        }
+      },
     });
 
     assistButtons.append(hintButton.getElement());
