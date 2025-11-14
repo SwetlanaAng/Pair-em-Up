@@ -8,10 +8,12 @@ export default class GameFieldView extends ElementCreator {
     });
     this.gameController = gameController;
     this.selectedCells = [];
+    this.selectedCellsValues = [];
     this.maxSelected = 2;
     this.clickAudio = new Audio('./assets/sounds/click.mp3');
     this.mistakeAudio = new Audio('./assets/sounds/mistake.mp3');
     this.doneAudio = new Audio('./assets/sounds/done.mp3');
+    this.revertPair = [];
   }
   stopAllSounds() {
     this.clickAudio.pause();
@@ -43,26 +45,48 @@ export default class GameFieldView extends ElementCreator {
     const col = +cell.dataset.col;
     const cellId = `${row}-${col}`;
     const isSelected = cell.classList.contains('selected');
+    const cellText = cell.textContent.trim();
+    const cellValue = cellText ? +cellText : this.gameController.getCellValue(row, col);
 
     if (isSelected) {
       this.playClickSound();
       cell.classList.remove('selected');
       this.selectedCells = this.selectedCells.filter((id) => id !== cellId);
+
+      this.selectedCellsValues = this.selectedCellsValues.filter((value) => value !== cellValue);
     } else {
       cell.classList.add('selected');
       this.selectedCells.push(cellId);
+      this.selectedCellsValues.push(cellValue);
 
       if (this.selectedCells.length === this.maxSelected) {
         const [firstId, secondId] = this.selectedCells;
         const [row1, col1] = firstId.split('-').map(Number);
         const [row2, col2] = secondId.split('-').map(Number);
 
+        const val1 = this.selectedCellsValues[0];
+        const val2 = this.selectedCellsValues[1];
+
         const isValid = this.gameController.handleCellPairSelection(row1, col1, row2, col2);
 
         if (isValid) {
+          this.revertPair = [];
+
+          this.revertPair = [
+            [row1, col1],
+            [row2, col2],
+            [val1, val2],
+          ];
+          this.gameController.assistButtonsPanel.getElement().querySelector('.revert').disabled =
+            false;
+          this.gameController.assistButtonsPanel
+            .getElement()
+            .querySelector('.revert')
+            .classList.remove('disabled');
           this.gameController.assistButtonsPanel.updateView(this.gameController);
           this.playDoneSound();
           this.selectedCells = [];
+          this.selectedCellsValues = [];
         } else {
           this.playMistakeSound();
           const firstCell = this.getElement().querySelector(
@@ -74,6 +98,7 @@ export default class GameFieldView extends ElementCreator {
           if (firstCell) firstCell.classList.remove('selected');
           if (secondCell) secondCell.classList.remove('selected');
           this.selectedCells = [];
+          this.selectedCellsValues = [];
         }
       } else {
         this.playClickSound();
@@ -98,6 +123,7 @@ export default class GameFieldView extends ElementCreator {
     });
 
     this.selectedCells = [];
+    this.selectedCellsValues = [];
 
     gameFieldData.forEach((row, rowIndex) => {
       const rowElement = new ElementCreator({
@@ -135,7 +161,8 @@ export default class GameFieldView extends ElementCreator {
   updateView(gameFieldData) {
     const gameField = this.getElement();
     gameField.innerHTML = '';
-    this.selectedCells = [];
+    /* this.selectedCells = []; //не уверена
+    this.selectedCellsValues = []; */
     this.createView(gameFieldData);
   }
 }

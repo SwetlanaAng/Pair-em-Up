@@ -306,4 +306,10 @@ export default class GameModel {
     this.shuffleCount = 5;
     this.eraserCount = 5;
   }
+  revertPair(row1, col1, row2, col2, val1, val2) {
+    console.log(row1, col1, row2, col2, val1, val2);
+    this.gameField[row1][col1] = val1;
+    this.gameField[row2][col2] = val2;
+    this.score -= this.getPoints(val1, val2);
+  }
 }

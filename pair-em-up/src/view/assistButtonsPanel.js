@@ -40,9 +40,33 @@ export default class AssistButtonsPanelView extends ElementCreator {
     });
     const revertButton = new ElementCreator({
       tag: 'button',
-      classNames: ['btn', 'revert'],
-      attrubutesNames: [['type', 'button']],
+      classNames: ['btn', 'revert', 'disabled'],
+      attrubutesNames: [
+        ['type', 'button'],
+        ['disabled', 'true'],
+      ],
       textContent: 'Revert',
+      callback: () => {
+        const pairData = this.gameController.gameFieldView.revertPair;
+        console.log(pairData);
+        this.gameController.revertPair(
+          pairData[0][0],
+          pairData[0][1],
+          pairData[1][0],
+          pairData[1][1],
+          pairData[2][0],
+          pairData[2][1]
+        );
+        hintButton.getElement().textContent = `hint (
+        ${this.gameController.getValidPairsCount() > 5 ? '5+' : this.gameController.getValidPairsCount()})`;
+        this.gameController.gameFieldView.revertPair = [];
+        this.gameController.assistButtonsPanel.getElement().querySelector('.revert').disabled =
+          true;
+        this.gameController.assistButtonsPanel
+          .getElement()
+          .querySelector('.revert')
+          .classList.add('disabled');
+      },
     });
     const shuffleButton = new ElementCreator({
       tag: 'button',
@@ -79,7 +103,13 @@ export default class AssistButtonsPanelView extends ElementCreator {
         }
       },
     });
-
+    if (this.gameController.gameFieldView.revertPair.length > 1) {
+      revertButton.getElement().disabled = false;
+      revertButton.getElement().classList.remove('disabled');
+    } else {
+      revertButton.getElement().disabled = true;
+      revertButton.getElement().classList.add('disabled');
+    }
     assistButtons.append(hintButton.getElement());
     assistButtons.append(addNumbersButton.getElement());
     assistButtons.append(revertButton.getElement());

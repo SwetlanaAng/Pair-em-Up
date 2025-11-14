@@ -92,10 +92,20 @@ export default class GameController {
     //this.assistButtonsPanel.updateView(this);
   }
   startNewGame() {
+    this.gameFieldView.revertPair = [];
     this.gameModel.startNewGame();
     /* const updatedGameFieldData = this.gameModel.getGameField(); //пока не знаю
     this.gameFieldView.updateView(updatedGameFieldData);
     this.currentGameIndicatorsView.updateView(this.gameModel.score, this.gameModel.gameState);
     this.assistButtonsPanel.updateView(this); */
+  }
+  revertPair(row1, col1, row2, col2, val1, val2) {
+    this.gameModel.revertPair(row1, col1, row2, col2, val1, val2);
+    const updatedGameFieldData = this.gameModel.getGameField();
+    this.gameFieldView.updateView(updatedGameFieldData);
+    this.currentGameIndicatorsView.updateView(this.gameModel.score, this.gameModel.gameState);
+  }
+  getCellValue(row, col) {
+    return this.gameModel.getCellValue(row, col);
   }
 }
