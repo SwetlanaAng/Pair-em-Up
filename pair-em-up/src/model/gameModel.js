@@ -12,6 +12,7 @@ export default class GameModel {
     this.score = 0;
     this.gameState = 'playing';
     this.addNumberCount = 10;
+    this.shuffleCount = 5;
   }
   getGameField() {
     return this.gameField;
@@ -288,5 +289,9 @@ export default class GameModel {
       );
       this.getGameFieldFromArray(currentGameField.concat(arr));
     }
+  }
+  shuffleGameField() {
+    this.shuffleCount--;
+    this.gameField = this.gameField.sort(() => Math.random() - 0.5);
   }
 }

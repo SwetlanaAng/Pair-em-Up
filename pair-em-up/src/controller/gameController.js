@@ -77,4 +77,9 @@ export default class GameController {
   getValidPairsCount() {
     return this.gameModel.getNumberValidPairs(this.gameModel.gameField);
   }
+  shuffleGameField() {
+    this.gameModel.shuffleGameField();
+    const updatedGameFieldData = this.gameModel.getGameField();
+    this.gameFieldView.updateView(updatedGameFieldData);
+  }
 }

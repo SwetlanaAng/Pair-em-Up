@@ -46,7 +46,17 @@ export default class AssistButtonsPanelView extends ElementCreator {
       tag: 'button',
       classNames: ['btn', 'shuffle'],
       attrubutesNames: [['type', 'button']],
-      textContent: 'Shuffle',
+      textContent: `Shuffle (${this.gameController.gameModel.shuffleCount})`,
+      callback: (event) => {
+        this.gameController.shuffleGameField();
+        event.target.textContent = `Shuffle (${this.gameController.gameModel.shuffleCount})`;
+        hintButton.getElement().textContent = `hint (
+        ${this.gameController.getValidPairsCount() > 5 ? '5+' : this.gameController.getValidPairsCount()})`;
+        if (this.gameController.gameModel.shuffleCount === 0) {
+          event.target.disabled = true;
+          event.target.classList.add('disabled');
+        }
+      },
     });
     const eraserButton = new ElementCreator({
       tag: 'button',
