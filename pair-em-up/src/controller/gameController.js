@@ -24,6 +24,9 @@ export default class GameController {
     this.headerView.onSelect((gameMode) => {
       this.gameModel.setGameMode(gameMode);
       this.gameModel.score = 0;
+      // Сбрасываем таймер при смене режима игры
+      this.currentGameIndicatorsView.resetTimer();
+      this.currentGameIndicatorsView.startTimer();
       const updatedGameFieldData = this.gameModel.getGameField();
       this.currentGameIndicatorsView.updateView(this.gameModel.score, gameMode);
       this.gameFieldView.updateView(updatedGameFieldData);
@@ -94,6 +97,9 @@ export default class GameController {
   startNewGame() {
     this.gameFieldView.revertPair = [];
     this.gameModel.startNewGame();
+    // Сбрасываем таймер при начале новой игры
+    this.currentGameIndicatorsView.resetTimer();
+    this.currentGameIndicatorsView.startTimer();
     /* const updatedGameFieldData = this.gameModel.getGameField(); //пока не знаю
     this.gameFieldView.updateView(updatedGameFieldData);
     this.currentGameIndicatorsView.updateView(this.gameModel.score, this.gameModel.gameState);

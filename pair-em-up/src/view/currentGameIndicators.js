@@ -8,6 +8,10 @@ export default class CurrentGameIndicatorsView extends ElementCreator {
     });
     this.rootView = rootView;
     this.gameController = null;
+    this.minutes = '00';
+    this.seconds = '00';
+    this.timerInterval = null;
+    this.totalSeconds = 0;
   }
   createView(points = 0) {
     const currentGameIndicators = this.getElement();
@@ -31,22 +35,17 @@ export default class CurrentGameIndicatorsView extends ElementCreator {
       tag: 'div',
       classNames: ['timer-display'],
     });
-    const hours = new ElementCreator({
-      tag: 'span',
-      classNames: ['hours'],
-      textContent: '00 : ',
-    });
+    
     const minutes = new ElementCreator({
       tag: 'span',
       classNames: ['minutes'],
-      textContent: '00 : ',
+      textContent: `${this.minutes} : `,
     });
     const seconds = new ElementCreator({
       tag: 'span',
       classNames: ['seconds'],
-      textContent: '00',
+      textContent: `${this.seconds}`,
     });
-    timerDisplay.addInnerElement(hours);
     timerDisplay.addInnerElement(minutes);
     timerDisplay.addInnerElement(seconds);
 
@@ -55,20 +54,70 @@ export default class CurrentGameIndicatorsView extends ElementCreator {
 
     currentGameIndicators.append(scoreDisplay.getElement());
     currentGameIndicators.append(timerDisplay.getElement());
+
+    this.startTimer();
+    
     return currentGameIndicators;
+  }
+  
+  startTimer() {
+    this.stopTimer();
+
+    this.totalSeconds = 0;
+ 
+    this.timerInterval = setInterval(() => {
+      this.totalSeconds++;
+      const minutes = Math.floor(this.totalSeconds / 60);
+      const seconds = this.totalSeconds % 60;
+      
+      const formattedMinutes = minutes.toString().padStart(2, '0');
+      const formattedSeconds = seconds.toString().padStart(2, '0');
+      
+      this.updateTimer(formattedMinutes, formattedSeconds);
+    }, 1000);
+  }
+  
+  stopTimer() {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+      this.timerInterval = null;
+    }
+  }
+  
+  resetTimer() {
+    this.stopTimer();
+    this.totalSeconds = 0;
+    this.minutes = '00';
+    this.seconds = '00';
+    this.updateTimer('00', '00');
+  }
+  
+  updateTimer(min, sec) {
+    const currentGameIndicators = this.getElement();
+    const minutes = currentGameIndicators.querySelector('.minutes');
+    const seconds = currentGameIndicators.querySelector('.seconds');
+    minutes.textContent = `${min} : `;
+    seconds.textContent = `${sec}`;
+    this.minutes = min;
+    this.seconds = sec;
   }
   updateView(points = 0, gameState) {
     const currentGameIndicators = this.getElement();
     const currentScoreElement = currentGameIndicators.querySelector('.current-score');
-
+    
     if (!currentScoreElement) {
       this.createView(points);
       return;
     }
 
     currentScoreElement.textContent = `${points}`;
-    if (gameState === 'win') {
-      this.rootView.createModal('win');
+    if (gameState === 'win' || gameState === 'lose') {
+      this.stopTimer();
+      if (gameState === 'win') {
+        this.rootView.createModal('win');
+      } else if (gameState === 'lose') {
+        this.rootView.createModal('lose');
+      }
     }
   }
 }

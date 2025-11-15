@@ -69,6 +69,8 @@ export default class RootView extends ElementCreator {
     const main = this.getElement();
     this.gameController.updateGameFieldData();
     this.gameController.setGameState('playing');
+    // Сбрасываем таймер при обновлении view (начало новой игры)
+    this.gameController.getCurrentGameIndicatorsView().resetTimer();
     main.innerHTML = '';
     this.createView();
   }
