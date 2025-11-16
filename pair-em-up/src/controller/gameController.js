@@ -118,7 +118,13 @@ export default class GameController {
       this.gameFieldView.revertPair
     );
   }
-
+  updateGame(min, sec) {
+    this.gameFieldView.updateView(this.gameModel.gameField);
+    this.headerView.updateView(this.gameModel.gameMode);
+    this.currentGameIndicatorsView.updateView(this.gameModel.score, this.gameModel.gameState);
+    this.assistButtonsPanel.updateView(this);
+    this.currentGameIndicatorsView.updateTimer(min, sec);
+  }
   startSavedGame() {
     const savedGame = this.gameModel.localStorageService.getSavedGameResults();
     console.log(savedGame);
@@ -132,13 +138,10 @@ export default class GameController {
     this.currentGameIndicatorsView.totalSeconds = savedGame.time;
     const minutes = Math.floor(this.currentGameIndicatorsView.totalSeconds / 60);
     const seconds = this.currentGameIndicatorsView.totalSeconds % 60;
-    this.currentGameIndicatorsView.updateTimer(
-      minutes.toString().padStart(2, '0'),
-      seconds.toString().padStart(2, '0')
-    );
-    this.gameFieldView.updateView(this.gameModel.gameField);
-    this.headerView.updateView(this.gameModel.gameMode);
-    this.currentGameIndicatorsView.updateView(this.gameModel.score, this.gameModel.gameState);
-    this.assistButtonsPanel.updateView(this);
+    this.updateGame(minutes, seconds);
+  }
+  resetGame() {
+    this.gameModel.resetGame();
+    this.updateGame('00', '00');
   }
 }

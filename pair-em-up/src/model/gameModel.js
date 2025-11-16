@@ -333,4 +333,8 @@ export default class GameModel {
     };
     this.localStorageService.saveGameToStorage(gameResult);
   }
+  resetGame() {
+    this.setGameMode(this.gameMode);
+    this.startNewGame();
+  }
 }

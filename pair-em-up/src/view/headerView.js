@@ -138,7 +138,7 @@ export default class HeaderView extends ElementCreator {
 
     return header;
   }
-  updateView(mode){
+  updateView(mode) {
     const header = this.getElement();
     const modeSelect = header.querySelector('.mode-select');
     modeSelect.value = mode;

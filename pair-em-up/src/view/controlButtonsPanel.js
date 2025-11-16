@@ -16,6 +16,9 @@ export default class ControlButtonsPanelView extends ElementCreator {
       classNames: ['btn', 'reset'],
       attrubutesNames: [['type', 'button']],
       textContent: 'reset',
+      callback: () => {
+        this.gameController.resetGame();
+      },
     });
     const saveButton = new ElementCreator({
       tag: 'button',
