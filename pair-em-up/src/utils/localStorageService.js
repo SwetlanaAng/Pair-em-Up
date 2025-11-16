@@ -16,7 +16,7 @@ export default class LocalStorageService {
   }
 
   getSavedGameResults() {
-    const results = localStorage.getItem(this.this.SAVED_GAME_KEY);
+    const results = localStorage.getItem(this.SAVED_GAME_KEY);
     return results ? JSON.parse(results) : {}; // что вернет?
   }
 
@@ -25,7 +25,7 @@ export default class LocalStorageService {
   }
 
   getCompletedGamesList() {
-    const completedGames = localStorage.getItem(this.this.COMPLETED_GAMES_RESULTS_KEY);
+    const completedGames = localStorage.getItem(this.COMPLETED_GAMES_RESULTS_KEY);
     return completedGames ? JSON.parse(completedGames) : [];
   }
   setCompletedGameToStorage(gameResult) {

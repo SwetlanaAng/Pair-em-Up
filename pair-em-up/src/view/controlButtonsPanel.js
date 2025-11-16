@@ -31,6 +31,9 @@ export default class ControlButtonsPanelView extends ElementCreator {
       classNames: ['btn', 'continue'],
       attrubutesNames: [['type', 'button']],
       textContent: 'continue',
+      callback: () => {
+        this.gameController.startSavedGame();
+      },
     });
 
     controlButtons.append(resetButton.getElement());

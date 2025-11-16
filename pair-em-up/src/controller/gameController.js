@@ -118,4 +118,27 @@ export default class GameController {
       this.gameFieldView.revertPair
     );
   }
+
+  startSavedGame() {
+    const savedGame = this.gameModel.localStorageService.getSavedGameResults();
+    console.log(savedGame);
+    this.gameModel.gameMode = savedGame.mode;
+    this.gameModel.gameField = savedGame.field;
+    this.gameModel.score = savedGame.score;
+    this.gameModel.addNumberCount = savedGame.addNumberCount;
+    this.gameModel.shuffleCount = savedGame.shuffleCount;
+    this.gameModel.eraserCount = savedGame.eraserCount;
+    this.gameModel.amountOfMovesCount = savedGame.amountOfMoves;
+    this.currentGameIndicatorsView.totalSeconds = savedGame.time;
+    const minutes = Math.floor(this.currentGameIndicatorsView.totalSeconds / 60);
+    const seconds = this.currentGameIndicatorsView.totalSeconds % 60;
+    this.currentGameIndicatorsView.updateTimer(
+      minutes.toString().padStart(2, '0'),
+      seconds.toString().padStart(2, '0')
+    );
+    this.gameFieldView.updateView(this.gameModel.gameField);
+    this.headerView.updateView(this.gameModel.gameMode);
+    this.currentGameIndicatorsView.updateView(this.gameModel.score, this.gameModel.gameState);
+    this.assistButtonsPanel.updateView(this);
+  }
 }
