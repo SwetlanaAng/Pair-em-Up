@@ -5,8 +5,10 @@ export default class ControlButtonsPanelView extends ElementCreator {
       tag: 'div',
       classNames: ['control-buttons-panel'],
     });
+    this.gameController = null;
   }
-  createView() {
+  createView(gameController) {
+    this.gameController = gameController;
     const controlButtons = this.getElement();
     controlButtons.innerHTML = '';
     const resetButton = new ElementCreator({
@@ -20,6 +22,9 @@ export default class ControlButtonsPanelView extends ElementCreator {
       classNames: ['btn', 'save'],
       attrubutesNames: [['type', 'button']],
       textContent: 'save',
+      callback: () => {
+        this.gameController.saveGame();
+      },
     });
     const continueButton = new ElementCreator({
       tag: 'button',

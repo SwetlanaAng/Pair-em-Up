@@ -35,7 +35,7 @@ export default class CurrentGameIndicatorsView extends ElementCreator {
       tag: 'div',
       classNames: ['timer-display'],
     });
-    
+
     const minutes = new ElementCreator({
       tag: 'span',
       classNames: ['minutes'],
@@ -56,34 +56,34 @@ export default class CurrentGameIndicatorsView extends ElementCreator {
     currentGameIndicators.append(timerDisplay.getElement());
 
     this.startTimer();
-    
+
     return currentGameIndicators;
   }
-  
+
   startTimer() {
     this.stopTimer();
 
     this.totalSeconds = 0;
- 
+
     this.timerInterval = setInterval(() => {
       this.totalSeconds++;
       const minutes = Math.floor(this.totalSeconds / 60);
       const seconds = this.totalSeconds % 60;
-      
+
       const formattedMinutes = minutes.toString().padStart(2, '0');
       const formattedSeconds = seconds.toString().padStart(2, '0');
-      
+
       this.updateTimer(formattedMinutes, formattedSeconds);
     }, 1000);
   }
-  
+
   stopTimer() {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
       this.timerInterval = null;
     }
   }
-  
+
   resetTimer() {
     this.stopTimer();
     this.totalSeconds = 0;
@@ -91,7 +91,7 @@ export default class CurrentGameIndicatorsView extends ElementCreator {
     this.seconds = '00';
     this.updateTimer('00', '00');
   }
-  
+
   updateTimer(min, sec) {
     const currentGameIndicators = this.getElement();
     const minutes = currentGameIndicators.querySelector('.minutes');
@@ -104,7 +104,7 @@ export default class CurrentGameIndicatorsView extends ElementCreator {
   updateView(points = 0, gameState) {
     const currentGameIndicators = this.getElement();
     const currentScoreElement = currentGameIndicators.querySelector('.current-score');
-    
+
     if (!currentScoreElement) {
       this.createView(points);
       return;

@@ -1,3 +1,4 @@
+import LocalStorageService from '../utils/localStorageService.js';
 export default class GameModel {
   constructor() {
     this.initialGameField = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19];
@@ -14,6 +15,8 @@ export default class GameModel {
     this.addNumberCount = 10;
     this.shuffleCount = 5;
     this.eraserCount = 5;
+    this.amountOfMovesCount = 0;
+    this.localStorageService = new LocalStorageService();
   }
   getGameField() {
     return this.gameField;
@@ -53,6 +56,7 @@ export default class GameModel {
       if (this.gameField.length > this.maxRows) {
         this.gameState = 'lose';
         this.score = 0;
+        this.amountOfMovesCount = 0;
         this.addNumberCount = 10;
         //return ????
       }
@@ -263,6 +267,7 @@ export default class GameModel {
       this.gameField[row1][col1] = 0;
       this.gameField[row2][col2] = 0;
       this.score += this.getPoints(val1, val2);
+      this.amountOfMovesCount++;
       if (this.score >= 5) {
         //поменять на 100
         this.gameState = 'win';
@@ -301,6 +306,7 @@ export default class GameModel {
   }
   startNewGame() {
     this.score = 0;
+    this.amountOfMovesCount = 0;
     this.gameState = 'playing';
     this.addNumberCount = 10;
     this.shuffleCount = 5;
@@ -311,5 +317,20 @@ export default class GameModel {
     this.gameField[row1][col1] = val1;
     this.gameField[row2][col2] = val2;
     this.score -= this.getPoints(val1, val2);
+    this.amountOfMovesCount--;
+  }
+  saveGame(time, revertPair) {
+    const gameResult = {
+      mode: this.gameMode,
+      field: this.gameField,
+      score: this.score,
+      addNumberCount: this.addNumberCount,
+      shuffleCount: this.shuffleCount,
+      eraserCount: this.eraserCount,
+      time: time,
+      revertPair: revertPair,
+      amountOfMoves: this.amountOfMovesCount,
+    };
+    this.localStorageService.saveGameToStorage(gameResult);
   }
 }

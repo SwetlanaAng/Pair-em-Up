@@ -11,6 +11,7 @@ export default class GameController {
     this.rootView = rootView;
     this.currentGameIndicatorsView = new CurrentGameIndicatorsView(rootView);
     this.assistButtonsPanel = this.rootView.assistButtonsPanel;
+    this.controlButtonsPanel = this.rootView.controlButtonsPanel;
   }
 
   init() {
@@ -24,7 +25,6 @@ export default class GameController {
     this.headerView.onSelect((gameMode) => {
       this.gameModel.setGameMode(gameMode);
       this.gameModel.score = 0;
-      // Сбрасываем таймер при смене режима игры
       this.currentGameIndicatorsView.resetTimer();
       this.currentGameIndicatorsView.startTimer();
       const updatedGameFieldData = this.gameModel.getGameField();
@@ -92,12 +92,10 @@ export default class GameController {
     this.gameModel.eraseCell(row, col);
     const updatedGameFieldData = this.gameModel.getGameField();
     this.gameFieldView.updateView(updatedGameFieldData);
-    //this.assistButtonsPanel.updateView(this);
   }
   startNewGame() {
     this.gameFieldView.revertPair = [];
     this.gameModel.startNewGame();
-    // Сбрасываем таймер при начале новой игры
     this.currentGameIndicatorsView.resetTimer();
     this.currentGameIndicatorsView.startTimer();
     /* const updatedGameFieldData = this.gameModel.getGameField(); //пока не знаю
@@ -113,5 +111,11 @@ export default class GameController {
   }
   getCellValue(row, col) {
     return this.gameModel.getCellValue(row, col);
+  }
+  saveGame() {
+    this.gameModel.saveGame(
+      this.currentGameIndicatorsView.totalSeconds,
+      this.gameFieldView.revertPair
+    );
   }
 }
