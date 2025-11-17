@@ -25,18 +25,24 @@ export default class GameFieldView extends ElementCreator {
   }
 
   playClickSound() {
-    this.stopAllSounds();
-    this.clickAudio.play();
+    if (this.gameController.audioSettingsService.getSetting('cellClick')) {
+      this.stopAllSounds();
+      this.clickAudio.play();
+    }
   }
 
   playMistakeSound() {
-    this.stopAllSounds();
-    this.mistakeAudio.play();
+    if (this.gameController.audioSettingsService.getSetting('invalidPair')) {
+      this.stopAllSounds();
+      this.mistakeAudio.play();
+    }
   }
 
   playDoneSound() {
-    this.stopAllSounds();
-    this.doneAudio.play();
+    if (this.gameController.audioSettingsService.getSetting('successfulMatch')) {
+      this.stopAllSounds();
+      this.doneAudio.play();
+    }
   }
 
   handleCellClick(event) {

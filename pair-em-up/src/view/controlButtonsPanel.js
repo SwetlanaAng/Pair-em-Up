@@ -10,8 +10,10 @@ export default class ControlButtonsPanelView extends ElementCreator {
   }
 
   playAssistSound() {
-    this.assistAudio.currentTime = 0;
-    this.assistAudio.play();
+    if (this.gameController.audioSettingsService.getSetting('assistTools')) {
+      this.assistAudio.currentTime = 0;
+      this.assistAudio.play();
+    }
   }
   createView(gameController) {
     this.gameController = gameController;
