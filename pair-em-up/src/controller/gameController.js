@@ -17,6 +17,7 @@ export default class GameController {
     this.winAudio = new Audio('./assets/sounds/win.mp3');
     this.loseAudio = new Audio('./assets/sounds/lose.mp3');
     this.audioSettingsService = this.headerView.getAudioSettingsService();
+    this.themeService = this.headerView.getThemeService();
   }
 
   init() {
@@ -31,11 +32,6 @@ export default class GameController {
       this.gameModel.setGameMode(gameMode);
       this.startNewGame();
       this.updateGame('00', '00');
-      /* this.currentGameIndicatorsView.resetTimer();
-      this.currentGameIndicatorsView.startTimer();
-      const updatedGameFieldData = this.gameModel.getGameField();
-      this.currentGameIndicatorsView.updateView(this.gameModel.score, gameMode);
-      this.gameFieldView.updateView(updatedGameFieldData); */
     });
   }
 
@@ -109,7 +105,6 @@ export default class GameController {
     this.gameFieldView.updateView(updatedGameFieldData);
   }
   startNewGame() {
-    // Останавливаем звуки перед началом новой игры
     this.winAudio.pause();
     this.winAudio.currentTime = 0;
     this.loseAudio.pause();
@@ -122,10 +117,6 @@ export default class GameController {
     this.currentGameIndicatorsView.resetTimer();
     this.currentGameIndicatorsView.startTimer();
     this.assistButtonsPanel.updateView(this);
-    /* const updatedGameFieldData = this.gameModel.getGameField(); //пока не знаю
-    this.gameFieldView.updateView(updatedGameFieldData);
-    this.currentGameIndicatorsView.updateView(this.gameModel.score, this.gameModel.gameState);
-    this.assistButtonsPanel.updateView(this); */
   }
   revertPair(row1, col1, row2, col2, val1, val2) {
     this.gameModel.revertPair(row1, col1, row2, col2, val1, val2);
@@ -137,9 +128,13 @@ export default class GameController {
     return this.gameModel.getCellValue(row, col);
   }
   saveGame() {
+    const theme = this.themeService.getTheme();
+    const audioSettings = this.audioSettingsService.getAllSettings();
     this.gameModel.saveGame(
       this.currentGameIndicatorsView.totalSeconds,
-      this.gameFieldView.revertPair
+      this.gameFieldView.revertPair,
+      theme,
+      audioSettings
     );
   }
   updateGame(min, sec) {
@@ -160,6 +155,17 @@ export default class GameController {
     this.gameModel.eraserCount = savedGame.eraserCount;
     this.gameModel.amountOfMovesCount = savedGame.amountOfMoves;
     this.currentGameIndicatorsView.totalSeconds = savedGame.time;
+
+    if (savedGame.theme) {
+      this.themeService.setTheme(savedGame.theme);
+    }
+
+    if (savedGame.audioSettings) {
+      Object.keys(savedGame.audioSettings).forEach((key) => {
+        this.audioSettingsService.setSetting(key, savedGame.audioSettings[key]);
+      });
+    }
+
     const minutes = Math.floor(this.currentGameIndicatorsView.totalSeconds / 60);
     const seconds = this.currentGameIndicatorsView.totalSeconds % 60;
     this.updateGame(minutes, seconds);

@@ -250,6 +250,10 @@ export default class HeaderView extends ElementCreator {
     return this.audioSettingsService;
   }
 
+  getThemeService() {
+    return this.themeService;
+  }
+
   showThemeSettings() {
     const header = this.getElement();
     const existingModal = header.querySelector('.theme-settings-modal-bg');

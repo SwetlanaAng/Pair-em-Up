@@ -37,4 +37,8 @@ export default class AudioSettingsService {
     this.saveSettings();
     return this.settings[key];
   }
+
+  getAllSettings() {
+    return { ...this.settings };
+  }
 }

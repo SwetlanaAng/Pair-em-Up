@@ -267,7 +267,7 @@ export default class GameModel {
     this.score -= this.getPoints(val1, val2);
     this.amountOfMovesCount--;
   }
-  saveGame(time, revertPair) {
+  saveGame(time, revertPair, theme, audioSettings) {
     const gameResult = {
       mode: this.gameMode,
       field: this.gameField,
@@ -278,6 +278,8 @@ export default class GameModel {
       time: time,
       revertPair: revertPair,
       amountOfMoves: this.amountOfMovesCount,
+      theme: theme,
+      audioSettings: audioSettings,
     };
     this.localStorageService.saveGameToStorage(gameResult);
   }

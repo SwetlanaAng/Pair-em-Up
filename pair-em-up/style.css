@@ -9,10 +9,10 @@
   --bg-tertiary: #ffffff;
   --text-primary: #333;
   --text-secondary: #666;
-  --text-light: #bbc6fa;
+  --text-light: #976dc1;
   --text-accent: #667eea;
   --text-warning: #f5f04e;
-  --text-timer: #dfc6f8;
+  --text-timer: #976dc1;
   --border-color: #ddd;
   --border-light: #e0e0e0;
   --shadow: rgba(0, 0, 0, 0.1);
@@ -592,6 +592,12 @@ body {
 }
 
 @media (max-width: 768px) {
+  .root-view {
+    padding: 1px;
+  }
+  .game-field{
+    padding: 1px;
+  }
   .header {
     flex-direction: column;
     align-items: flex-start;
@@ -621,14 +627,19 @@ body {
   }
 
   .grid-cell {
-    font-size: 14px;
+    font-size: 7px;
   }
 
   .control-buttons-panel,
   .assist-buttons-panel {
     flex-direction: column;
   }
-
+  .current-score {
+    font-size: 22px;
+  }
+  .timer-display{
+    font-size: 22px;
+  } 
   .btn {
     width: 100%;
   }
