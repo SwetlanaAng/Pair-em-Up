@@ -160,7 +160,8 @@ export default class GameController {
     this.updateGame('00', '00');
   }
   showScoreTable() {
-    this.rootView.createModal('score-table');
+    const completedGames = this.localStorageService.getCompletedGamesList();
+    this.rootView.createModal('score-table', completedGames);
   }
   isFailed() {
     if (this.gameModel.isFailed() || this.gameModel.gameState === 'lose') return true;

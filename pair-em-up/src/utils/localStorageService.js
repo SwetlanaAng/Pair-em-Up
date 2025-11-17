@@ -29,10 +29,10 @@ export default class LocalStorageService {
     return completedGames ? JSON.parse(completedGames) : [];
   }
   setCompletedGameToStorage(gameResult) {
-    // gameResult - это объект с данными - mode. time. score.  amount of moves. win/lose
     const completedGames = this.getCompletedGamesList();
     completedGames.push(gameResult);
-    const limitedCompletedGames = completedGames.slice(0, this.maxResults);
+
+    const limitedCompletedGames = completedGames.slice(-this.maxResults);
     localStorage.setItem(this.COMPLETED_GAMES_RESULTS_KEY, JSON.stringify(limitedCompletedGames));
   }
 }

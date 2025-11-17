@@ -50,7 +50,131 @@ export default class RootView extends ElementCreator {
     });
 
     if (state === 'score-table') {
-      // список из 5 последних игр с отметками побед
+      const completedGames = gameResult || [];
+
+      const modalInfo = new ElementCreator({
+        tag: 'h2',
+        classNames: ['modal-info'],
+        textContent: 'Score Table',
+      });
+      modalContent.addInnerElement(modalInfo);
+      const lastFiveGames = [...completedGames].sort((a, b) => a.time - b.time);
+
+      if (lastFiveGames.length === 0) {
+        const emptyMessage = new ElementCreator({
+          tag: 'div',
+          classNames: ['score-table-empty'],
+          textContent: 'No completed games yet. Play to see your results!',
+        });
+        modalContent.addInnerElement(emptyMessage);
+      } else {
+        const scoreTableList = new ElementCreator({
+          tag: 'div',
+          classNames: ['score-table-list'],
+        });
+
+        lastFiveGames.forEach((game, index) => {
+          const gameItem = new ElementCreator({
+            tag: 'div',
+            classNames: [
+              'score-table-item',
+              game.state === 'win' ? 'score-table-item-win' : 'score-table-item-lose',
+            ],
+          });
+
+          if (game.state === 'win') {
+            const trophyIcon = new ElementCreator({
+              tag: 'span',
+              classNames: ['trophy-icon'],
+              textContent: '⭐',
+            });
+            gameItem.addInnerElement(trophyIcon);
+          }
+          const gameInfo = new ElementCreator({
+            tag: 'div',
+            classNames: ['score-table-game-info'],
+          });
+          const modeLabel = new ElementCreator({
+            tag: 'span',
+            classNames: ['score-table-mode'],
+            textContent: game.mode.charAt(0).toUpperCase() + game.mode.slice(1),
+          });
+          gameInfo.addInnerElement(modeLabel);
+
+          const resultLabel = new ElementCreator({
+            tag: 'span',
+            classNames: [
+              'score-table-result',
+              game.state === 'win' ? 'score-table-result-win' : 'score-table-result-lose',
+            ],
+            textContent: game.state === 'win' ? 'Win' : 'Lose',
+          });
+          gameInfo.addInnerElement(resultLabel);
+
+          const gameDetails = new ElementCreator({
+            tag: 'div',
+            classNames: ['score-table-details'],
+          });
+
+          const scoreDetail = new ElementCreator({
+            tag: 'div',
+            classNames: ['score-table-detail'],
+          });
+          const scoreLabel = new ElementCreator({
+            tag: 'span',
+            classNames: ['score-table-detail-label'],
+            textContent: `Score: ${game.score || 0}`,
+          });
+          scoreDetail.addInnerElement(scoreLabel);
+          gameDetails.addInnerElement(scoreDetail);
+
+          const minutes = Math.floor(game.time / 60);
+          const seconds = game.time % 60;
+          const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+          const timeDetail = new ElementCreator({
+            tag: 'div',
+            classNames: ['score-table-detail'],
+          });
+          const timeLabel = new ElementCreator({
+            tag: 'span',
+            classNames: ['score-table-detail-label'],
+            textContent: `Time: ${formattedTime}`,
+          });
+
+          timeDetail.addInnerElement(timeLabel);
+          gameDetails.addInnerElement(timeDetail);
+
+          const movesDetail = new ElementCreator({
+            tag: 'div',
+            classNames: ['score-table-detail'],
+          });
+          const movesLabel = new ElementCreator({
+            tag: 'span',
+            classNames: ['score-table-detail-label'],
+            textContent: `Moves: ${game.amountOfMoves || 0}`,
+          });
+
+          movesDetail.addInnerElement(movesLabel);
+          gameDetails.addInnerElement(movesDetail);
+
+          gameItem.addInnerElement(gameInfo);
+          gameItem.addInnerElement(gameDetails);
+          scoreTableList.addInnerElement(gameItem);
+        });
+
+        modalContent.addInnerElement(scoreTableList);
+      }
+
+      const modalButton = new ElementCreator({
+        tag: 'button',
+        classNames: ['modal-button', 'btn'],
+        textContent: 'Close',
+        callback: () => {
+          this.closeModal();
+        },
+      });
+      modalContent.addInnerElement(modalButton);
     } else if (state === 'win' || state === 'lose') {
       const modalInfo = new ElementCreator({
         tag: 'h2',
@@ -127,6 +251,14 @@ export default class RootView extends ElementCreator {
     modal.addInnerElement(modalContent);
     main.append(modal.getElement());
   }
+  closeModal() {
+    const main = this.getElement();
+    const modal = main.querySelector('.modal-bg');
+    if (modal) {
+      modal.remove();
+    }
+  }
+
   updateRootView() {
     const main = this.getElement();
     const modal = main.querySelector('.modal-bg');

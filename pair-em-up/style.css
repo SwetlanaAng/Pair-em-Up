@@ -356,25 +356,28 @@ body {
 .modal-content {
   width: 500px;
   min-height: 400px;
+  max-height: 90vh;
   background: #ffffff;
-  padding: 40px 50px;
+  padding: 20px 50px;
   z-index: 6;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   flex-direction: column;
   align-items: center;
   border-radius: 7px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  gap: 30px;
+  gap: 8px;
+  overflow-y: auto;
 }
 
 .modal-info {
   margin: 0;
-  font-size: 28px;
+  font-size: 22px;
   font-weight: 700;
   text-align: center;
   line-height: 1.3;
   padding: 0 10px;
+  margin-bottom: 5px;
 }
 
 .modal-results {
@@ -417,6 +420,107 @@ body {
   width: auto;
   min-width: 200px;
 }
+
+.score-table-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+  font-size: 16px;
+  font-style: italic;
+}
+
+.score-table-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 5px;
+}
+
+.score-table-item {
+  width: 100%;
+  padding: 6px 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.score-table-item-win {
+  background: linear-gradient(135deg, rgba(67, 233, 123, 0.1) 0%, rgba(56, 249, 215, 0.1) 100%);
+  border-color: rgba(67, 233, 123, 0.3);
+}
+
+.score-table-item-lose {
+  background: linear-gradient(135deg, rgba(245, 87, 108, 0.1) 0%, rgba(240, 147, 251, 0.1) 100%);
+  border-color: rgba(245, 87, 108, 0.3);
+}
+
+.trophy-icon {
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.score-table-game-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 100px;
+  flex-shrink: 0;
+}
+
+.score-table-mode {
+  font-size: 13px;
+  font-weight: 700;
+  color: #667eea;
+  text-transform: capitalize;
+}
+
+.score-table-result {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 5px;
+  display: inline-block;
+  width: fit-content;
+}
+
+.score-table-result-win {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  color: white;
+}
+
+.score-table-result-lose {
+  background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+  color: white;
+}
+
+.score-table-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.score-table-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.score-table-detail-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+}
+
 @media (max-width: 768px) {
   .header {
     flex-direction: column;
@@ -483,5 +587,27 @@ body {
   .modal-button {
     width: 100%;
     min-width: auto;
+  }
+
+  .score-table-item {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .score-table-game-info {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .score-table-details {
+    width: 100%;
+  }
+
+  .trophy-icon {
+    position: absolute;
+    top: 16px;
+    right: 16px;
   }
 }
