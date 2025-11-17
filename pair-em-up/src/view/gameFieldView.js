@@ -91,7 +91,6 @@ export default class GameFieldView extends ElementCreator {
             .classList.remove('disabled');
           this.gameController.assistButtonsPanel.updateView(this.gameController);
           this.playDoneSound();
-          console.log(this.gameController.gameModel.gameField);
           this.selectedCells = [];
           this.selectedCellsValues = [];
         } else {
@@ -168,8 +167,6 @@ export default class GameFieldView extends ElementCreator {
   updateView(gameFieldData) {
     const gameField = this.getElement();
     gameField.innerHTML = '';
-    /* this.selectedCells = []; //не уверена
-    this.selectedCellsValues = []; */
     this.createView(gameFieldData);
   }
 }

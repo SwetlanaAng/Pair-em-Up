@@ -27,6 +27,13 @@ export default class ControlButtonsPanelView extends ElementCreator {
       callback: () => {
         this.playAssistSound();
         this.gameController.resetGame();
+        this.gameController.gameFieldView.revertPair = [];
+        this.gameController.assistButtonsPanel.getElement().querySelector('.revert').disabled =
+          true;
+        this.gameController.assistButtonsPanel
+          .getElement()
+          .querySelector('.revert')
+          .classList.add('disabled');
       },
     });
     const saveButton = new ElementCreator({
@@ -41,14 +48,22 @@ export default class ControlButtonsPanelView extends ElementCreator {
     });
     const continueButton = new ElementCreator({
       tag: 'button',
-      classNames: ['btn', 'continue'],
-      attrubutesNames: [['type', 'button']],
+      classNames: ['btn', 'continue', 'disabled'],
+      attrubutesNames: [
+        ['type', 'button'],
+        ['disabled', 'true'],
+      ],
       textContent: 'continue',
       callback: () => {
         this.playAssistSound();
         this.gameController.startSavedGame();
       },
     });
+    const savedGame = this.gameController.localStorageService.getSavedGameResults();
+    if (savedGame && savedGame.mode) {
+      continueButton.getElement().disabled = false;
+      continueButton.getElement().classList.remove('disabled');
+    }
     const scoreTableButton = new ElementCreator({
       tag: 'button',
       classNames: ['btn', 'score-table'],

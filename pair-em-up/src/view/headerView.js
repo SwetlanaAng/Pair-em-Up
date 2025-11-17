@@ -305,7 +305,6 @@ export default class HeaderView extends ElementCreator {
         ],
         callback: () => {
           this.themeService.setTheme(theme.key);
-          // Обновляем визуально выбранную тему
           themeOptions
             .getElement()
             .querySelectorAll('.theme-settings-option')

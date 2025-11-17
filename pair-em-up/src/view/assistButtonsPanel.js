@@ -19,7 +19,6 @@ export default class AssistButtonsPanelView extends ElementCreator {
   }
   createView(gameController) {
     this.gameController = gameController;
-    //this.gameFieldView = gameController.gameFieldView;
     const assistButtons = this.getElement();
     assistButtons.innerHTML = '';
     const hintButton = new ElementCreator({
@@ -93,6 +92,9 @@ export default class AssistButtonsPanelView extends ElementCreator {
       callback: (event) => {
         if (!event.target.disabled && !event.target.classList.contains('disabled')) {
           this.gameController.shuffleGameField();
+          this.gameController.gameFieldView.revertPair = [];
+          revertButton.getElement().disabled = true;
+          revertButton.getElement().classList.add('disabled');
           this.playAssistSound();
           event.target.textContent = `Shuffle (${this.gameController.gameModel.shuffleCount})`;
           hintButton.getElement().textContent = `hint (

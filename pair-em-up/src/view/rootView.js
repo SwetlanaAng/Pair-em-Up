@@ -236,16 +236,34 @@ export default class RootView extends ElementCreator {
 
       modalContent.addInnerElement(resultsContainer);
 
-      const modalButton = new ElementCreator({
+      const buttonsContainer = new ElementCreator({
+        tag: 'div',
+        classNames: ['modal-buttons-container'],
+      });
+
+      const playAgainButton = new ElementCreator({
         tag: 'button',
-        classNames: ['modal-button', 'btn'],
-        textContent: 'Play again',
+        classNames: ['modal-button', 'btn', 'play-again-btn'],
+        textContent: 'Play Again',
         callback: () => {
-          this.gameController.startNewGame();
+          this.gameController.restartGameWithSameSettings();
           this.updateRootView();
         },
       });
-      modalContent.addInnerElement(modalButton);
+      buttonsContainer.addInnerElement(playAgainButton);
+
+      const newGameButton = new ElementCreator({
+        tag: 'button',
+        classNames: ['modal-button', 'btn', 'new-game-btn'],
+        textContent: 'New Game',
+        callback: () => {
+          this.gameController.resetToStartScreen();
+          this.updateRootView();
+        },
+      });
+      buttonsContainer.addInnerElement(newGameButton);
+
+      modalContent.addInnerElement(buttonsContainer);
     }
 
     modal.addInnerElement(modalContent);
@@ -265,7 +283,8 @@ export default class RootView extends ElementCreator {
     if (modal) {
       modal.remove();
     }
-    this.gameController.updateGameFieldData();
+    const currentMode = this.gameController.getGameModel().gameMode;
+    this.gameController.updateGameFieldData(currentMode);
     this.gameController.setGameState('playing');
     this.gameController.getCurrentGameIndicatorsView().resetTimer();
     main.innerHTML = '';

@@ -6,18 +6,12 @@ export default class LocalStorageService {
   }
 
   saveGameToStorage(gameResult) {
-    // gameResult - это объект с данными - field. mode. time. score. undo history. assist buttons hist. amount of moves
     localStorage.setItem(this.SAVED_GAME_KEY, JSON.stringify(gameResult));
-    console.log(gameResult);
-    /* const maxResults = 5;
-    const limitedResults = results.slice(0, maxResults); */
-
-    //localStorage.setItem(this.GAME_RESULTS_KEY, JSON.stringify(limitedResults));
   }
 
   getSavedGameResults() {
     const results = localStorage.getItem(this.SAVED_GAME_KEY);
-    return results ? JSON.parse(results) : {}; // что вернет?
+    return results ? JSON.parse(results) : {};
   }
 
   clearSavedGame() {

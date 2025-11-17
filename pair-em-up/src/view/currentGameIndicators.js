@@ -52,8 +52,26 @@ export default class CurrentGameIndicatorsView extends ElementCreator {
     scoreDisplay.addInnerElement(currentScore);
     scoreDisplay.addInnerElement(targetScore);
 
+    const progressBarContainer = new ElementCreator({
+      tag: 'div',
+      classNames: ['progress-bar-container'],
+    });
+    const progressBar = new ElementCreator({
+      tag: 'div',
+      classNames: ['progress-bar'],
+    });
+    const progressBarFill = new ElementCreator({
+      tag: 'div',
+      classNames: ['progress-bar-fill'],
+    });
+    progressBar.addInnerElement(progressBarFill);
+    progressBarContainer.addInnerElement(progressBar);
+
     currentGameIndicators.append(scoreDisplay.getElement());
+    currentGameIndicators.append(progressBarContainer.getElement());
     currentGameIndicators.append(timerDisplay.getElement());
+
+    this.updateProgressBar(points);
 
     this.startTimer();
 
@@ -64,6 +82,21 @@ export default class CurrentGameIndicatorsView extends ElementCreator {
     this.stopTimer();
 
     this.totalSeconds = 0;
+
+    this.timerInterval = setInterval(() => {
+      this.totalSeconds++;
+      const minutes = Math.floor(this.totalSeconds / 60);
+      const seconds = this.totalSeconds % 60;
+
+      const formattedMinutes = minutes.toString().padStart(2, '0');
+      const formattedSeconds = seconds.toString().padStart(2, '0');
+
+      this.updateTimer(formattedMinutes, formattedSeconds);
+    }, 1000);
+  }
+
+  resumeTimer() {
+    this.stopTimer();
 
     this.timerInterval = setInterval(() => {
       this.totalSeconds++;
@@ -111,8 +144,21 @@ export default class CurrentGameIndicatorsView extends ElementCreator {
     }
 
     currentScoreElement.textContent = `${points}`;
+
+    this.updateProgressBar(points);
+
     if (gameState === 'win' || gameState === 'lose') {
       this.stopTimer();
+    }
+  }
+
+  updateProgressBar(points) {
+    const currentGameIndicators = this.getElement();
+    const progressBarFill = currentGameIndicators.querySelector('.progress-bar-fill');
+    if (progressBarFill) {
+      const targetScore = 100;
+      const percentage = Math.min((points / targetScore) * 100, 100);
+      progressBarFill.style.width = `${percentage}%`;
     }
   }
 }

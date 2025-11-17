@@ -12,7 +12,7 @@ export default class GameModel {
     this.gameMode = 'classic';
     this.score = 0;
     this.gameState = 'playing';
-    this.addNumberCount = 10; //поменять на 10
+    this.addNumberCount = 10;
     this.shuffleCount = 5;
     this.eraserCount = 5;
     this.amountOfMovesCount = 0;
@@ -197,8 +197,7 @@ export default class GameModel {
       this.gameField[row2][col2] = 0;
       this.score += this.getPoints(val1, val2);
       this.amountOfMovesCount++;
-      if (this.score >= 10) {
-        //поменять на 100
+      if (this.score >= 100) {
         this.gameState = 'win';
         this.score = 0;
         this.addNumberCount = 10;
@@ -257,7 +256,7 @@ export default class GameModel {
     this.score = 0;
     this.amountOfMovesCount = 0;
     this.gameState = 'playing';
-    this.addNumberCount = 1; //поменять на 10
+    this.addNumberCount = 10;
     this.shuffleCount = 5;
     this.eraserCount = 5;
   }

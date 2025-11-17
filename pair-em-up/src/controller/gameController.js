@@ -23,8 +23,26 @@ export default class GameController {
   init() {
     const gameFieldData = this.gameModel.getGameField();
     this.setupHeaderHandler();
+    this.setupAutoSave();
 
     return this.gameFieldView.createView(gameFieldData);
+  }
+
+  setupAutoSave() {
+    window.addEventListener('beforeunload', () => {
+      this.autoSaveGame();
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        this.autoSaveGame();
+      }
+    });
+  }
+
+  autoSaveGame() {
+    if (this.gameModel.gameState === 'playing') {
+      this.saveGame();
+    }
   }
 
   setupHeaderHandler() {
@@ -136,6 +154,7 @@ export default class GameController {
       theme,
       audioSettings
     );
+    this.updateContinueButton();
   }
   updateGame(min, sec) {
     this.gameFieldView.updateView(this.gameModel.gameField);
@@ -146,7 +165,6 @@ export default class GameController {
   }
   startSavedGame() {
     const savedGame = this.gameModel.localStorageService.getSavedGameResults();
-    console.log(savedGame);
     this.gameModel.gameMode = savedGame.mode;
     this.gameModel.gameField = savedGame.field;
     this.gameModel.score = savedGame.score;
@@ -155,6 +173,17 @@ export default class GameController {
     this.gameModel.eraserCount = savedGame.eraserCount;
     this.gameModel.amountOfMovesCount = savedGame.amountOfMoves;
     this.currentGameIndicatorsView.totalSeconds = savedGame.time;
+
+    if (savedGame.revertPair && savedGame.revertPair.length > 0) {
+      this.gameFieldView.revertPair = savedGame.revertPair;
+      const revertButton = this.assistButtonsPanel.getElement().querySelector('.revert');
+      if (revertButton) {
+        revertButton.disabled = false;
+        revertButton.classList.remove('disabled');
+      }
+    } else {
+      this.gameFieldView.revertPair = [];
+    }
 
     if (savedGame.theme) {
       this.themeService.setTheme(savedGame.theme);
@@ -166,12 +195,47 @@ export default class GameController {
       });
     }
 
-    const minutes = Math.floor(this.currentGameIndicatorsView.totalSeconds / 60);
-    const seconds = this.currentGameIndicatorsView.totalSeconds % 60;
+    this.gameModel.gameState = 'playing';
+
+    let minutes = Math.floor(this.currentGameIndicatorsView.totalSeconds / 60);
+    let seconds = this.currentGameIndicatorsView.totalSeconds % 60;
+    if (minutes < 10) {
+      minutes = `0${minutes}`;
+    }
+    if (seconds < 10) {
+      seconds = `0${seconds}`;
+    }
     this.updateGame(minutes, seconds);
+    this.currentGameIndicatorsView.resumeTimer();
   }
   resetGame() {
     this.gameModel.resetGame();
+    this.currentGameIndicatorsView.resetTimer();
+    this.currentGameIndicatorsView.startTimer();
+    this.updateGame('00', '00');
+  }
+  restartGameWithSameSettings() {
+    const currentMode = this.gameModel.gameMode;
+    this.gameModel.setGameMode(currentMode);
+    this.startNewGame();
+    this.updateGame('00', '00');
+  }
+  resetToStartScreen() {
+    this.themeService.setTheme('dark');
+
+    const defaultSettings = {
+      cellClick: true,
+      successfulMatch: true,
+      invalidPair: true,
+      assistTools: true,
+      gameEvents: true,
+    };
+    Object.keys(defaultSettings).forEach((key) => {
+      this.audioSettingsService.setSetting(key, defaultSettings[key]);
+    });
+
+    this.gameModel.setGameMode('classic');
+    this.startNewGame();
     this.updateGame('00', '00');
   }
   showScoreTable() {
@@ -198,14 +262,32 @@ export default class GameController {
       if (this.audioSettingsService.getSetting('gameEvents')) {
         this.winAudio.play();
       }
+      this.localStorageService.clearSavedGame();
+      this.updateContinueButton();
       this.rootView.createModal('win', gameResult);
       this.localStorageService.setCompletedGameToStorage(gameResult);
     } else if (this.gameModel.gameState === 'lose') {
       if (this.audioSettingsService.getSetting('gameEvents')) {
         this.loseAudio.play();
       }
+      this.localStorageService.clearSavedGame();
+      this.updateContinueButton();
       this.rootView.createModal('lose', gameResult);
       this.localStorageService.setCompletedGameToStorage(gameResult);
+    }
+  }
+
+  updateContinueButton() {
+    const continueButton = document.querySelector('.btn.continue');
+    if (continueButton) {
+      const hasSavedGame = !!this.localStorageService.getSavedGameResults().mode;
+      if (hasSavedGame) {
+        continueButton.disabled = false;
+        continueButton.classList.remove('disabled');
+      } else {
+        continueButton.disabled = true;
+        continueButton.classList.add('disabled');
+      }
     }
   }
 }
