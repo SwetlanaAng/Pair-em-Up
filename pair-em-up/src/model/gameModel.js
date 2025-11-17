@@ -12,13 +12,15 @@ export default class GameModel {
     this.gameMode = 'classic';
     this.score = 0;
     this.gameState = 'playing';
-    this.addNumberCount = 10;
+    this.addNumberCount = 1; //поменять на 10
     this.shuffleCount = 5;
     this.eraserCount = 5;
     this.amountOfMovesCount = 0;
+    this.revertOpportunity = false;
     this.localStorageService = new LocalStorageService();
   }
   getGameField() {
+    this.normalizeGameField();
     return this.gameField;
   }
 
@@ -52,6 +54,9 @@ export default class GameModel {
     });
     for (let i = 0; i < interimArray.length; i++) {
       chankArray = interimArray.slice(i, i + 9);
+      while (chankArray.length < 9) {
+        chankArray.push(0);
+      }
       this.gameField.push(chankArray);
       if (this.gameField.length > this.maxRows) {
         this.gameState = 'lose';
@@ -108,83 +113,7 @@ export default class GameModel {
       return 2;
     } else return false;
   }
-  /*   isValidCell(array, row, col) {
-    if (array[row][col] === 0) return false;
-    if (row > 0) {
-      //up
-      if (this.getPoints(array[row][col], array[row - 1][col])) return true;
-      if (array[row - 1][col] === 0) {
-        let newRow = row;
-        while (newRow > 0 && array[newRow - 1][col] === 0) newRow--;
-        if (this.getPoints(array[row][col], array[newRow][col])) return true;
-      }
-    }
-    if (row < array.length - 1) {
-      //down
-      if (this.getPoints(array[row][col], array[row + 1][col])) return true;
-      if (array[row + 1][col] === 0) {
-        let newRow = row;
-        while (newRow < array.length - 1 && array[newRow + 1][col] === 0) newRow--;
-        if (this.getPoints(array[row][col], array[newRow + 1][col])) return true;
-      }
-    }
-    if (col > 0) {
-      //left
-      if (this.getPoints(array[row][col], array[row][col - 1])) return true;
-      if (array[row][col - 1] === 0) {
-        let newCol = col;
-        let newRow = row;
-        while (newCol > 0 && array[newRow][newCol - 1] === 0) {
-          newCol--;
-          if (newCol === 0) {
-            newRow--;
-            if (newRow < 0) break;
-            newCol = 9;
-          }
-        }
-        if (this.getPoints(array[row][col], array[row][newCol])) return true;
-      }
-    } else {
-      let newCol = 9;
-      if (this.getPoints(array[row][col], array[row][newCol])) return true;
-      if (array[row][newCol] === 0) {
-        let newRow = row;
-        while (newCol > 0 && array[newRow][newCol - 1] === 0) {
-          newCol--;
-          if (newCol === 0) {
-            newRow--;
-            if (newRow < 0) break;
-            newCol = 9;
-          }
-        }
-        if (this.getPoints(array[row][col], array[row][newCol])) return true;
-      }
-    }
 
-    if (col < array[row].length - 1) {
-      //right
-      if (this.getPoints(array[row][col], array[row][col + 1])) return true;
-      if (array[row][col + 1] === 0) {
-        let newCol = col;
-        let newRow = row;
-        while (newCol < array[row].length - 1 && array[newRow][newCol + 1] === 0) {
-          newCol++;
-          if (newCol === 9) {
-            newRow++;
-          }
-        }
-      }
-    } else {
-      if (this.getPoints(array[row][col], array[row + 1][0])) return true;
-      if (array[row + 1][0] === 0) {
-        let newRow = row;
-        while (newRow < array.length - 1 && array[newRow + 1][0] === 0) newRow++;
-        if (this.getPoints(array[row][col], array[newRow + 1][0])) return true;
-      }
-    }
-
-    return false;
-  } */
   getNumberValidPairs(array) {
     let numberValidPairs = 0;
     const flatArray = array.flat();
@@ -253,7 +182,7 @@ export default class GameModel {
           const minIndex = Math.min(index1, index2);
           const maxIndex = Math.max(index1, index2);
           for (let i = minIndex + 1; i < maxIndex; i++) {
-            if (flatGameField[i] !== 0) {
+            if (i >= flatGameField.length || flatGameField[i] !== 0) {
               return false;
             }
           }
@@ -268,7 +197,7 @@ export default class GameModel {
       this.gameField[row2][col2] = 0;
       this.score += this.getPoints(val1, val2);
       this.amountOfMovesCount++;
-      if (this.score >= 5) {
+      if (this.score >= 30) {
         //поменять на 100
         this.gameState = 'win';
         this.score = 0;
@@ -279,6 +208,8 @@ export default class GameModel {
   }
   addNumbersToGameField() {
     this.addNumberCount--;
+    this.normalizeGameField();
+
     const currentGameField = this.gameField.flat();
     const leftNumbers = currentGameField.filter((cell) => cell !== 0);
 
@@ -295,10 +226,28 @@ export default class GameModel {
       );
       this.getGameFieldFromArray(currentGameField.concat(arr));
     }
+    this.normalizeGameField();
   }
   shuffleGameField() {
     this.shuffleCount--;
     this.gameField = this.gameField.sort(() => Math.random() - 0.5);
+    this.normalizeGameField();
+  }
+
+  normalizeGameField() {
+    this.gameField = this.gameField.map((row, index) => {
+      if (row.length < this.columns) {
+        const normalizedRow = [...row];
+        while (normalizedRow.length < this.columns) {
+          normalizedRow.push(0);
+        }
+        return normalizedRow;
+      }
+      if (row.length > this.columns) {
+        return row.slice(0, this.columns);
+      }
+      return row;
+    });
   }
   eraseCell(row, col) {
     this.eraserCount--;
@@ -308,12 +257,11 @@ export default class GameModel {
     this.score = 0;
     this.amountOfMovesCount = 0;
     this.gameState = 'playing';
-    this.addNumberCount = 10;
+    this.addNumberCount = 1; //поменять на 10
     this.shuffleCount = 5;
     this.eraserCount = 5;
   }
   revertPair(row1, col1, row2, col2, val1, val2) {
-    console.log(row1, col1, row2, col2, val1, val2);
     this.gameField[row1][col1] = val1;
     this.gameField[row2][col2] = val2;
     this.score -= this.getPoints(val1, val2);
@@ -336,5 +284,18 @@ export default class GameModel {
   resetGame() {
     this.setGameMode(this.gameMode);
     this.startNewGame();
+  }
+  isFailed() {
+    if (
+      (this.getNumberValidPairs(this.gameField) === 0 ||
+        this.gameField.every((row) => row.length === 0)) &&
+      this.addNumberCount === 0 &&
+      this.shuffleCount === 0 &&
+      this.eraserCount === 0 &&
+      !this.revertOpportunity
+    ) {
+      this.gameMode = 'lose';
+      return true;
+    } else return false;
   }
 }

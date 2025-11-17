@@ -24,12 +24,13 @@ export default class GameController {
   setupHeaderHandler() {
     this.headerView.onSelect((gameMode) => {
       this.gameModel.setGameMode(gameMode);
-      this.gameModel.score = 0;
-      this.currentGameIndicatorsView.resetTimer();
+      this.startNewGame();
+      this.updateGame('00', '00');
+      /* this.currentGameIndicatorsView.resetTimer();
       this.currentGameIndicatorsView.startTimer();
       const updatedGameFieldData = this.gameModel.getGameField();
       this.currentGameIndicatorsView.updateView(this.gameModel.score, gameMode);
-      this.gameFieldView.updateView(updatedGameFieldData);
+      this.gameFieldView.updateView(updatedGameFieldData); */
     });
   }
 
@@ -78,7 +79,13 @@ export default class GameController {
     this.gameFieldView.updateView(updatedGameFieldData);
   }
   getValidPairsCount() {
-    return this.gameModel.getNumberValidPairs(this.gameModel.gameField);
+    const validPairsCount = this.gameModel.getNumberValidPairs(this.gameModel.gameField);
+    if (this.isFailed()) {
+      console.log('getValidPairsCount - lose');
+      this.rootView.createModal('lose');
+      return 0;
+    }
+    return validPairsCount;
   }
   shuffleGameField() {
     this.gameModel.shuffleGameField();
@@ -96,8 +103,11 @@ export default class GameController {
   startNewGame() {
     this.gameFieldView.revertPair = [];
     this.gameModel.startNewGame();
+    this.assistButtonsPanel.addNumbersIsDisabled = false;
+    this.assistButtonsPanel.shuffleIsDisabled = false;
     this.currentGameIndicatorsView.resetTimer();
     this.currentGameIndicatorsView.startTimer();
+    this.assistButtonsPanel.updateView(this);
     /* const updatedGameFieldData = this.gameModel.getGameField(); //пока не знаю
     this.gameFieldView.updateView(updatedGameFieldData);
     this.currentGameIndicatorsView.updateView(this.gameModel.score, this.gameModel.gameState);
@@ -143,5 +153,13 @@ export default class GameController {
   resetGame() {
     this.gameModel.resetGame();
     this.updateGame('00', '00');
+  }
+  showScoreTable() {
+    this.rootView.createModal('score-table');
+  }
+  isFailed() {
+    console.log('isFailed', this.gameModel.isFailed(), this.gameModel.gameState);
+    if (this.gameModel.isFailed() || this.gameModel.gameState === 'lose') return true;
+    else return false;
   }
 }

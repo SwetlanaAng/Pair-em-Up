@@ -24,14 +24,16 @@ export default class RootView extends ElementCreator {
     }
     const headerView = this.gameController.getHeaderView().createView();
     main.append(headerView);
+    const controlButtonsPanelView = this.controlButtonsPanel.createView(this.gameController);
+    main.append(controlButtonsPanelView);
     const currentGameIndicatorsView = this.gameController
       .getCurrentGameIndicatorsView()
       .createView();
     main.append(currentGameIndicatorsView);
+
     const gameFieldView = this.gameController.init();
     main.append(gameFieldView);
-    const controlButtonsPanelView = this.controlButtonsPanel.createView(this.gameController);
-    main.append(controlButtonsPanelView);
+
     const assistButtonsPanelView = this.assistButtonsPanel.createView(this.gameController);
     main.append(assistButtonsPanelView);
   }
@@ -46,6 +48,9 @@ export default class RootView extends ElementCreator {
       tag: 'div',
       classNames: ['modal-content'],
     });
+    if (state === 'score-table') {
+      // список из 5 последних игр с отметками побед
+    }
     const modalInfo = new ElementCreator({
       tag: 'h2',
       classNames: ['modal-info'],

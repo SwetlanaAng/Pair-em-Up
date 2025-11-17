@@ -320,6 +320,13 @@ body {
 .btn.eraser:hover {
   background: linear-gradient(135deg, #fcb69f 0%, #ffecd2 100%);
 }
+.btn.score-table {
+  background: linear-gradient(135deg, #b9c74b 0%, #eefaa8 100%);
+  color: white;
+}
+.btn.score-table:hover {
+  background: linear-gradient(135deg, #eefaa8 0%, #b9c74b 100%);
+}
 .modal-bg {
   width: 100vw;
   height: 100vh;

@@ -85,6 +85,7 @@ export default class GameFieldView extends ElementCreator {
             .classList.remove('disabled');
           this.gameController.assistButtonsPanel.updateView(this.gameController);
           this.playDoneSound();
+          console.log(this.gameController.gameModel.gameField);
           this.selectedCells = [];
           this.selectedCellsValues = [];
         } else {

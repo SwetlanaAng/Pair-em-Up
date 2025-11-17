@@ -38,10 +38,20 @@ export default class ControlButtonsPanelView extends ElementCreator {
         this.gameController.startSavedGame();
       },
     });
+    const scoreTableButton = new ElementCreator({
+      tag: 'button',
+      classNames: ['btn', 'score-table'],
+      attrubutesNames: [['type', 'button']],
+      textContent: 'Score Table',
+      callback: () => {
+        this.gameController.showScoreTable();
+      },
+    });
 
     controlButtons.append(resetButton.getElement());
     controlButtons.append(saveButton.getElement());
     controlButtons.append(continueButton.getElement());
+    controlButtons.append(scoreTableButton.getElement());
 
     return controlButtons;
   }

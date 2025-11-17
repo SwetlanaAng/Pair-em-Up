@@ -6,7 +6,8 @@ export default class AssistButtonsPanelView extends ElementCreator {
       classNames: ['assist-buttons-panel'],
     });
     this.gameController = null;
-    //this.gameFieldView = null
+    this.addNumbersIsDisabled = false;
+    this.shuffleIsDisabled = false;
   }
   createView(gameController) {
     this.gameController = gameController;
@@ -30,11 +31,14 @@ export default class AssistButtonsPanelView extends ElementCreator {
         hintButton.getElement().textContent = `hint (
         ${this.gameController.getValidPairsCount() > 5 ? '5+' : this.gameController.getValidPairsCount()})`;
         if (this.gameController.gameModel.addNumberCount === 0) {
-          event.target.disabled = true;
-          event.target.classList.add('disabled');
+          this.addNumbersIsDisabled = true;
         }
         if (this.gameController.gameModel.gameState === 'lose') {
           this.gameController.rootView.createModal('lose');
+        }
+        if (this.addNumbersIsDisabled) {
+          event.target.disabled = true;
+          event.target.classList.add('disabled');
         }
       },
     });
@@ -48,7 +52,6 @@ export default class AssistButtonsPanelView extends ElementCreator {
       textContent: 'Revert',
       callback: () => {
         const pairData = this.gameController.gameFieldView.revertPair;
-        console.log(pairData);
         this.gameController.revertPair(
           pairData[0][0],
           pairData[0][1],
@@ -79,6 +82,7 @@ export default class AssistButtonsPanelView extends ElementCreator {
         hintButton.getElement().textContent = `hint (
         ${this.gameController.getValidPairsCount() > 5 ? '5+' : this.gameController.getValidPairsCount()})`;
         if (this.gameController.gameModel.shuffleCount === 0) {
+          this.shuffleIsDisabled = true;
           event.target.disabled = true;
           event.target.classList.add('disabled');
         }
@@ -109,6 +113,14 @@ export default class AssistButtonsPanelView extends ElementCreator {
     } else {
       revertButton.getElement().disabled = true;
       revertButton.getElement().classList.add('disabled');
+    }
+    if (this.addNumbersIsDisabled) {
+      addNumbersButton.getElement().disabled = true;
+      addNumbersButton.getElement().classList.add('disabled');
+    }
+    if (this.shuffleIsDisabled) {
+      shuffleButton.getElement().disabled = true;
+      shuffleButton.getElement().classList.add('disabled');
     }
     assistButtons.append(hintButton.getElement());
     assistButtons.append(addNumbersButton.getElement());
