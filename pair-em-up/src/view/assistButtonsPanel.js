@@ -34,7 +34,7 @@ export default class AssistButtonsPanelView extends ElementCreator {
           this.addNumbersIsDisabled = true;
         }
         if (this.gameController.gameModel.gameState === 'lose') {
-          this.gameController.rootView.createModal('lose');
+          this.gameController.isWinOrLose();
         }
         if (this.addNumbersIsDisabled) {
           event.target.disabled = true;

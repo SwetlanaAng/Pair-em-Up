@@ -113,11 +113,6 @@ export default class CurrentGameIndicatorsView extends ElementCreator {
     currentScoreElement.textContent = `${points}`;
     if (gameState === 'win' || gameState === 'lose') {
       this.stopTimer();
-      if (gameState === 'win') {
-        this.rootView.createModal('win');
-      } else if (gameState === 'lose') {
-        this.rootView.createModal('lose');
-      }
     }
   }
 }

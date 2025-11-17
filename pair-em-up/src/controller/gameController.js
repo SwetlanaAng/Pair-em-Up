@@ -2,6 +2,7 @@ import GameModel from '../model/gameModel.js';
 import GameFieldView from '../view/gameFieldView.js';
 import HeaderView from '../view/headerView.js';
 import CurrentGameIndicatorsView from '../view/currentGameIndicators.js';
+import LocalStorageService from '../utils/localStorageService.js';
 
 export default class GameController {
   constructor(rootView) {
@@ -12,6 +13,7 @@ export default class GameController {
     this.currentGameIndicatorsView = new CurrentGameIndicatorsView(rootView);
     this.assistButtonsPanel = this.rootView.assistButtonsPanel;
     this.controlButtonsPanel = this.rootView.controlButtonsPanel;
+    this.localStorageService = new LocalStorageService();
   }
 
   init() {
@@ -43,6 +45,7 @@ export default class GameController {
       const updatedGameFieldData = this.gameModel.getGameField();
       this.gameFieldView.updateView(updatedGameFieldData);
       this.currentGameIndicatorsView.updateView(this.gameModel.score, this.gameModel.gameState);
+      this.isWinOrLose();
     }
 
     return isValid;
@@ -79,10 +82,12 @@ export default class GameController {
     this.gameFieldView.updateView(updatedGameFieldData);
   }
   getValidPairsCount() {
+    if (this.gameModel.gameState === 'lose') {
+      return 0;
+    }
     const validPairsCount = this.gameModel.getNumberValidPairs(this.gameModel.gameField);
     if (this.isFailed()) {
-      console.log('getValidPairsCount - lose');
-      this.rootView.createModal('lose');
+      this.isWinOrLose();
       return 0;
     }
     return validPairsCount;
@@ -158,8 +163,23 @@ export default class GameController {
     this.rootView.createModal('score-table');
   }
   isFailed() {
-    console.log('isFailed', this.gameModel.isFailed(), this.gameModel.gameState);
     if (this.gameModel.isFailed() || this.gameModel.gameState === 'lose') return true;
     else return false;
+  }
+  isWinOrLose() {
+    const gameResult = {
+      mode: this.gameModel.gameMode,
+      score: this.gameModel.score,
+      time: this.currentGameIndicatorsView.totalSeconds,
+      amountOfMoves: this.gameModel.amountOfMovesCount,
+      state: this.gameModel.gameState,
+    };
+    if (this.gameModel.gameState === 'win') {
+      this.rootView.createModal('win', gameResult);
+      this.localStorageService.setCompletedGameToStorage(gameResult);
+    } else if (this.gameModel.gameState === 'lose') {
+      this.rootView.createModal('lose', gameResult);
+      this.localStorageService.setCompletedGameToStorage(gameResult);
+    }
   }
 }

@@ -12,7 +12,7 @@ export default class GameModel {
     this.gameMode = 'classic';
     this.score = 0;
     this.gameState = 'playing';
-    this.addNumberCount = 1; //поменять на 10
+    this.addNumberCount = 10; //поменять на 10
     this.shuffleCount = 5;
     this.eraserCount = 5;
     this.amountOfMovesCount = 0;
@@ -20,7 +20,9 @@ export default class GameModel {
     this.localStorageService = new LocalStorageService();
   }
   getGameField() {
-    this.normalizeGameField();
+    if (this.gameField.length <= this.maxRows) {
+      this.normalizeGameField();
+    }
     return this.gameField;
   }
 
@@ -60,10 +62,8 @@ export default class GameModel {
       this.gameField.push(chankArray);
       if (this.gameField.length > this.maxRows) {
         this.gameState = 'lose';
-        this.score = 0;
-        this.amountOfMovesCount = 0;
         this.addNumberCount = 10;
-        //return ????
+        break;
       }
       i = i + 8;
     }
@@ -286,15 +286,23 @@ export default class GameModel {
     this.startNewGame();
   }
   isFailed() {
+    if (this.gameState === 'lose') {
+      return true;
+    }
+    if (this.gameField.length > this.maxRows) {
+      this.gameState = 'lose';
+      return true;
+    }
     if (
       (this.getNumberValidPairs(this.gameField) === 0 ||
         this.gameField.every((row) => row.length === 0)) &&
       this.addNumberCount === 0 &&
       this.shuffleCount === 0 &&
       this.eraserCount === 0 &&
-      !this.revertOpportunity
+      !this.revertOpportunity &&
+      this.score < 100
     ) {
-      this.gameMode = 'lose';
+      this.gameState = 'lose';
       return true;
     } else return false;
   }
