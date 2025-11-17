@@ -289,6 +289,9 @@ export default class GameModel {
     if (this.gameState === 'lose') {
       return true;
     }
+    if (this.gameState === 'playing') {
+      return false;
+    }
     if (this.gameField.length > this.maxRows) {
       this.gameState = 'lose';
       return true;

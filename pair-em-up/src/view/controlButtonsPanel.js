@@ -6,6 +6,12 @@ export default class ControlButtonsPanelView extends ElementCreator {
       classNames: ['control-buttons-panel'],
     });
     this.gameController = null;
+    this.assistAudio = new Audio('./assets/sounds/assist.mp3');
+  }
+
+  playAssistSound() {
+    this.assistAudio.currentTime = 0;
+    this.assistAudio.play();
   }
   createView(gameController) {
     this.gameController = gameController;
@@ -17,6 +23,7 @@ export default class ControlButtonsPanelView extends ElementCreator {
       attrubutesNames: [['type', 'button']],
       textContent: 'reset',
       callback: () => {
+        this.playAssistSound();
         this.gameController.resetGame();
       },
     });
@@ -26,6 +33,7 @@ export default class ControlButtonsPanelView extends ElementCreator {
       attrubutesNames: [['type', 'button']],
       textContent: 'save',
       callback: () => {
+        this.playAssistSound();
         this.gameController.saveGame();
       },
     });
@@ -35,6 +43,7 @@ export default class ControlButtonsPanelView extends ElementCreator {
       attrubutesNames: [['type', 'button']],
       textContent: 'continue',
       callback: () => {
+        this.playAssistSound();
         this.gameController.startSavedGame();
       },
     });
@@ -44,6 +53,7 @@ export default class ControlButtonsPanelView extends ElementCreator {
       attrubutesNames: [['type', 'button']],
       textContent: 'Score Table',
       callback: () => {
+        this.playAssistSound();
         this.gameController.showScoreTable();
       },
     });

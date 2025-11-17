@@ -14,6 +14,8 @@ export default class GameController {
     this.assistButtonsPanel = this.rootView.assistButtonsPanel;
     this.controlButtonsPanel = this.rootView.controlButtonsPanel;
     this.localStorageService = new LocalStorageService();
+    this.winAudio = new Audio('./assets/sounds/win.mp3');
+    this.loseAudio = new Audio('./assets/sounds/lose.mp3');
   }
 
   init() {
@@ -106,6 +108,12 @@ export default class GameController {
     this.gameFieldView.updateView(updatedGameFieldData);
   }
   startNewGame() {
+    // Останавливаем звуки перед началом новой игры
+    this.winAudio.pause();
+    this.winAudio.currentTime = 0;
+    this.loseAudio.pause();
+    this.loseAudio.currentTime = 0;
+
     this.gameFieldView.revertPair = [];
     this.gameModel.startNewGame();
     this.assistButtonsPanel.addNumbersIsDisabled = false;
@@ -168,6 +176,10 @@ export default class GameController {
     else return false;
   }
   isWinOrLose() {
+    if (this.gameModel.gameState === 'playing') {
+      return;
+    }
+
     const gameResult = {
       mode: this.gameModel.gameMode,
       score: this.gameModel.score,
@@ -176,9 +188,11 @@ export default class GameController {
       state: this.gameModel.gameState,
     };
     if (this.gameModel.gameState === 'win') {
+      this.winAudio.play();
       this.rootView.createModal('win', gameResult);
       this.localStorageService.setCompletedGameToStorage(gameResult);
     } else if (this.gameModel.gameState === 'lose') {
+      this.loseAudio.play();
       this.rootView.createModal('lose', gameResult);
       this.localStorageService.setCompletedGameToStorage(gameResult);
     }

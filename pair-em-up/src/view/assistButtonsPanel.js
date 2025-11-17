@@ -8,6 +8,12 @@ export default class AssistButtonsPanelView extends ElementCreator {
     this.gameController = null;
     this.addNumbersIsDisabled = false;
     this.shuffleIsDisabled = false;
+    this.assistAudio = new Audio('./assets/sounds/assist.mp3');
+  }
+
+  playAssistSound() {
+    this.assistAudio.currentTime = 0;
+    this.assistAudio.play();
   }
   createView(gameController) {
     this.gameController = gameController;
@@ -26,19 +32,22 @@ export default class AssistButtonsPanelView extends ElementCreator {
       attrubutesNames: [['type', 'button']],
       textContent: `Add Numbers (${this.gameController.gameModel.addNumberCount})`,
       callback: (event) => {
-        this.gameController.addNumbersToGameField();
-        event.target.textContent = `Add Numbers (${this.gameController.gameModel.addNumberCount})`;
-        hintButton.getElement().textContent = `hint (
-        ${this.gameController.getValidPairsCount() > 5 ? '5+' : this.gameController.getValidPairsCount()})`;
-        if (this.gameController.gameModel.addNumberCount === 0) {
-          this.addNumbersIsDisabled = true;
-        }
-        if (this.gameController.gameModel.gameState === 'lose') {
-          this.gameController.isWinOrLose();
-        }
-        if (this.addNumbersIsDisabled) {
-          event.target.disabled = true;
-          event.target.classList.add('disabled');
+        if (!event.target.disabled && !event.target.classList.contains('disabled')) {
+          this.gameController.addNumbersToGameField();
+          this.playAssistSound();
+          event.target.textContent = `Add Numbers (${this.gameController.gameModel.addNumberCount})`;
+          hintButton.getElement().textContent = `hint (
+          ${this.gameController.getValidPairsCount() > 5 ? '5+' : this.gameController.getValidPairsCount()})`;
+          if (this.gameController.gameModel.addNumberCount === 0) {
+            this.addNumbersIsDisabled = true;
+          }
+          if (this.gameController.gameModel.gameState === 'lose') {
+            this.gameController.isWinOrLose();
+          }
+          if (this.addNumbersIsDisabled) {
+            event.target.disabled = true;
+            event.target.classList.add('disabled');
+          }
         }
       },
     });
@@ -50,25 +59,28 @@ export default class AssistButtonsPanelView extends ElementCreator {
         ['disabled', 'true'],
       ],
       textContent: 'Revert',
-      callback: () => {
-        const pairData = this.gameController.gameFieldView.revertPair;
-        this.gameController.revertPair(
-          pairData[0][0],
-          pairData[0][1],
-          pairData[1][0],
-          pairData[1][1],
-          pairData[2][0],
-          pairData[2][1]
-        );
-        hintButton.getElement().textContent = `hint (
-        ${this.gameController.getValidPairsCount() > 5 ? '5+' : this.gameController.getValidPairsCount()})`;
-        this.gameController.gameFieldView.revertPair = [];
-        this.gameController.assistButtonsPanel.getElement().querySelector('.revert').disabled =
-          true;
-        this.gameController.assistButtonsPanel
-          .getElement()
-          .querySelector('.revert')
-          .classList.add('disabled');
+      callback: (event) => {
+        if (!event.target.disabled && !event.target.classList.contains('disabled')) {
+          const pairData = this.gameController.gameFieldView.revertPair;
+          this.gameController.revertPair(
+            pairData[0][0],
+            pairData[0][1],
+            pairData[1][0],
+            pairData[1][1],
+            pairData[2][0],
+            pairData[2][1]
+          );
+          this.playAssistSound();
+          hintButton.getElement().textContent = `hint (
+          ${this.gameController.getValidPairsCount() > 5 ? '5+' : this.gameController.getValidPairsCount()})`;
+          this.gameController.gameFieldView.revertPair = [];
+          this.gameController.assistButtonsPanel.getElement().querySelector('.revert').disabled =
+            true;
+          this.gameController.assistButtonsPanel
+            .getElement()
+            .querySelector('.revert')
+            .classList.add('disabled');
+        }
       },
     });
     const shuffleButton = new ElementCreator({
@@ -77,14 +89,17 @@ export default class AssistButtonsPanelView extends ElementCreator {
       attrubutesNames: [['type', 'button']],
       textContent: `Shuffle (${this.gameController.gameModel.shuffleCount})`,
       callback: (event) => {
-        this.gameController.shuffleGameField();
-        event.target.textContent = `Shuffle (${this.gameController.gameModel.shuffleCount})`;
-        hintButton.getElement().textContent = `hint (
-        ${this.gameController.getValidPairsCount() > 5 ? '5+' : this.gameController.getValidPairsCount()})`;
-        if (this.gameController.gameModel.shuffleCount === 0) {
-          this.shuffleIsDisabled = true;
-          event.target.disabled = true;
-          event.target.classList.add('disabled');
+        if (!event.target.disabled && !event.target.classList.contains('disabled')) {
+          this.gameController.shuffleGameField();
+          this.playAssistSound();
+          event.target.textContent = `Shuffle (${this.gameController.gameModel.shuffleCount})`;
+          hintButton.getElement().textContent = `hint (
+          ${this.gameController.getValidPairsCount() > 5 ? '5+' : this.gameController.getValidPairsCount()})`;
+          if (this.gameController.gameModel.shuffleCount === 0) {
+            this.shuffleIsDisabled = true;
+            event.target.disabled = true;
+            event.target.classList.add('disabled');
+          }
         }
       },
     });
@@ -94,16 +109,19 @@ export default class AssistButtonsPanelView extends ElementCreator {
       attrubutesNames: [['type', 'button']],
       textContent: `Eraser (${this.gameController.gameModel.eraserCount})`,
       callback: (event) => {
-        const [row, col] = this.gameController.gameFieldView.selectedCells[0]
-          .split('-')
-          .map(Number);
-        this.gameController.eraseCell(row, col);
-        event.target.textContent = `Eraser (${this.gameController.gameModel.eraserCount})`;
-        hintButton.getElement().textContent = `hint (
-        ${this.gameController.getValidPairsCount() > 5 ? '5+' : this.gameController.getValidPairsCount()})`;
-        if (this.gameController.gameModel.eraserCount === 0) {
-          event.target.disabled = true;
-          event.target.classList.add('disabled');
+        if (!event.target.disabled && !event.target.classList.contains('disabled')) {
+          const [row, col] = this.gameController.gameFieldView.selectedCells[0]
+            .split('-')
+            .map(Number);
+          this.gameController.eraseCell(row, col);
+          this.playAssistSound();
+          event.target.textContent = `Eraser (${this.gameController.gameModel.eraserCount})`;
+          hintButton.getElement().textContent = `hint (
+          ${this.gameController.getValidPairsCount() > 5 ? '5+' : this.gameController.getValidPairsCount()})`;
+          if (this.gameController.gameModel.eraserCount === 0) {
+            event.target.disabled = true;
+            event.target.classList.add('disabled');
+          }
         }
       },
     });
