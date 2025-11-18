@@ -48,11 +48,8 @@ export default class GameController {
 
   setupHeaderHandler() {
     this.headerView.onSelect((gameMode) => {
-      console.log('Mode selected:', gameMode);
       this.gameModel.setGameMode(gameMode);
-      console.log('Game state before startNewGame:', this.gameModel.gameState);
       this.startNewGame();
-      console.log('Game state after startNewGame:', this.gameModel.gameState);
     });
   }
 
