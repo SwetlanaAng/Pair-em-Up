@@ -16,6 +16,7 @@ export default class CurrentGameIndicatorsView extends ElementCreator {
   createView(points = 0) {
     const currentGameIndicators = this.getElement();
     currentGameIndicators.innerHTML = '';
+
     const scoreDisplay = new ElementCreator({
       tag: 'div',
       classNames: ['score-display'],
@@ -98,15 +99,21 @@ export default class CurrentGameIndicatorsView extends ElementCreator {
   resumeTimer() {
     this.stopTimer();
 
+    const minutes = Math.floor(this.totalSeconds / 60);
+    const seconds = this.totalSeconds % 60;
+    const formattedMinutes = minutes.toString().padStart(2, '0');
+    const formattedSeconds = seconds.toString().padStart(2, '0');
+    this.updateTimer(formattedMinutes, formattedSeconds);
+
     this.timerInterval = setInterval(() => {
       this.totalSeconds++;
-      const minutes = Math.floor(this.totalSeconds / 60);
-      const seconds = this.totalSeconds % 60;
+      const mins = Math.floor(this.totalSeconds / 60);
+      const secs = this.totalSeconds % 60;
 
-      const formattedMinutes = minutes.toString().padStart(2, '0');
-      const formattedSeconds = seconds.toString().padStart(2, '0');
+      const formattedMins = mins.toString().padStart(2, '0');
+      const formattedSecs = secs.toString().padStart(2, '0');
 
-      this.updateTimer(formattedMinutes, formattedSeconds);
+      this.updateTimer(formattedMins, formattedSecs);
     }, 1000);
   }
 

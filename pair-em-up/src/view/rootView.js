@@ -64,7 +64,6 @@ export default class RootView extends ElementCreator {
           this.assistAudio.play();
         }
         this.gameController.startSavedGame();
-        this.updateRootView();
       },
     });
 
@@ -98,10 +97,11 @@ export default class RootView extends ElementCreator {
     const controlButtonsPanelView = this.controlButtonsPanel.createView(this.gameController);
     main.append(controlButtonsPanelView);
 
-    const currentGameIndicatorsView = this.gameController
-      .getCurrentGameIndicatorsView()
-      .createView();
-    main.append(currentGameIndicatorsView);
+    const currentGameIndicatorsView = this.gameController.getCurrentGameIndicatorsView();
+    const indicatorsElement = currentGameIndicatorsView.createView(
+      this.gameController.getGameModel().score
+    );
+    main.append(indicatorsElement);
 
     const gameFieldView = this.gameController.init();
     main.append(gameFieldView);
@@ -120,8 +120,10 @@ export default class RootView extends ElementCreator {
       }
     }
 
-    this.gameController.getCurrentGameIndicatorsView().resetTimer();
-    this.gameController.getCurrentGameIndicatorsView().startTimer();
+    if (!this.isResumingGame && currentGameIndicatorsView.totalSeconds === 0) {
+      currentGameIndicatorsView.resetTimer();
+      currentGameIndicatorsView.startTimer();
+    }
   }
 
   createModal(state, gameResult) {
@@ -363,13 +365,14 @@ export default class RootView extends ElementCreator {
     }
   }
 
-  updateRootView() {
+  updateRootView(isResumingGame = false) {
     const main = this.getElement();
     const modal = main.querySelector('.modal-bg');
     if (modal) {
       modal.remove();
     }
     main.innerHTML = '';
+    this.isResumingGame = isResumingGame;
     this.createView();
   }
 }

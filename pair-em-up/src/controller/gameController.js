@@ -55,8 +55,7 @@ export default class GameController {
       if (!wasPlaying) {
         this.startNewGame();
       } else {
-        this.currentGameIndicatorsView.resetTimer();
-        this.currentGameIndicatorsView.startTimer();
+        this.startNewGame();
         const updatedGameFieldData = this.gameModel.getGameField();
         this.gameFieldView.updateView(updatedGameFieldData);
         this.currentGameIndicatorsView.updateTimer('00', '00');
@@ -186,7 +185,6 @@ export default class GameController {
     this.gameModel.shuffleCount = savedGame.shuffleCount;
     this.gameModel.eraserCount = savedGame.eraserCount;
     this.gameModel.amountOfMovesCount = savedGame.amountOfMoves;
-    this.currentGameIndicatorsView.totalSeconds = savedGame.time;
 
     if (savedGame.revertPair && savedGame.revertPair.length > 0) {
       this.gameFieldView.revertPair = savedGame.revertPair;
@@ -206,17 +204,17 @@ export default class GameController {
 
     this.gameModel.gameState = 'playing';
 
-    let minutes = Math.floor(this.currentGameIndicatorsView.totalSeconds / 60);
-    let seconds = this.currentGameIndicatorsView.totalSeconds % 60;
-    if (minutes < 10) {
-      minutes = `0${minutes}`;
+    this.rootView.updateRootView(true);
+
+    if (savedGame.time && savedGame.time > 0) {
+      this.currentGameIndicatorsView.totalSeconds = savedGame.time;
+      const minutes = Math.floor(savedGame.time / 60);
+      const seconds = savedGame.time % 60;
+      const formattedMinutes = minutes.toString().padStart(2, '0');
+      const formattedSeconds = seconds.toString().padStart(2, '0');
+      this.currentGameIndicatorsView.updateTimer(formattedMinutes, formattedSeconds);
+      this.currentGameIndicatorsView.resumeTimer();
     }
-    if (seconds < 10) {
-      seconds = `0${seconds}`;
-    }
-    this.updateGame(minutes, seconds);
-    this.currentGameIndicatorsView.resumeTimer();
-    this.rootView.updateRootView();
   }
   resetGame() {
     this.startNewGameAudio.play();
