@@ -16,6 +16,7 @@ export default class GameController {
     this.localStorageService = new LocalStorageService();
     this.winAudio = new Audio('./assets/sounds/win.mp3');
     this.loseAudio = new Audio('./assets/sounds/lose.mp3');
+    this.startNewGameAudio = new Audio('./assets/sounds/start.mp3');
     this.audioSettingsService = this.headerView.getAudioSettingsService();
     this.themeService = this.headerView.getThemeService();
   }
@@ -48,8 +49,19 @@ export default class GameController {
 
   setupHeaderHandler() {
     this.headerView.onSelect((gameMode) => {
+      const wasPlaying = this.gameModel.gameState === 'playing';
       this.gameModel.setGameMode(gameMode);
-      this.startNewGame();
+      this.headerView.updateView(gameMode);
+      if (!wasPlaying) {
+        this.startNewGame();
+      } else {
+        this.currentGameIndicatorsView.resetTimer();
+        this.currentGameIndicatorsView.startTimer();
+        const updatedGameFieldData = this.gameModel.getGameField();
+        this.gameFieldView.updateView(updatedGameFieldData);
+        this.currentGameIndicatorsView.updateTimer('00', '00');
+      }
+      this.startNewGameAudio.play();
     });
   }
 
@@ -127,6 +139,7 @@ export default class GameController {
     this.winAudio.currentTime = 0;
     this.loseAudio.pause();
     this.loseAudio.currentTime = 0;
+    this.startNewGameAudio.play();
 
     this.gameFieldView.revertPair = [];
     this.gameModel.startNewGame();
@@ -164,6 +177,7 @@ export default class GameController {
     this.currentGameIndicatorsView.updateTimer(min, sec);
   }
   startSavedGame() {
+    this.startNewGameAudio.play();
     const savedGame = this.gameModel.localStorageService.getSavedGameResults();
     this.gameModel.gameMode = savedGame.mode;
     this.gameModel.gameField = savedGame.field;
@@ -205,6 +219,7 @@ export default class GameController {
     this.rootView.updateRootView();
   }
   resetGame() {
+    this.startNewGameAudio.play();
     this.gameModel.resetGame();
     this.currentGameIndicatorsView.resetTimer();
     this.currentGameIndicatorsView.startTimer();

@@ -17,7 +17,7 @@ export default class HeaderView extends ElementCreator {
   onSelect(handler) {
     this.onSelectHandler = handler;
   }
-  createView() {
+  createView(isStartScreen = false) {
     const header = this.getElement();
     header.innerHTML = '';
     const headingBox = new ElementCreator({
@@ -70,21 +70,43 @@ export default class HeaderView extends ElementCreator {
       eventName: 'change',
     });
 
+    if (isStartScreen) {
+      const placeholderOption = new ElementCreator({
+        tag: 'option',
+        attributesNames: [
+          ['value', ''],
+          ['disabled', ''],
+          ['selected', ''],
+        ],
+        textContent: 'Select',
+      });
+      modeSelect.addInnerElement(placeholderOption);
+    }
+
     const classicOption = new ElementCreator({
       tag: 'option',
-      attributesNames: [['value', 'classic']],
+      attributesNames: [
+        ['value', 'classic'],
+        ...(!isStartScreen && this.gameMode === 'classic' ? [['selected', '']] : []),
+      ],
       textContent: 'Classic',
     });
 
     const randomOption = new ElementCreator({
       tag: 'option',
-      attributesNames: [['value', 'random']],
+      attributesNames: [
+        ['value', 'random'],
+        ...(!isStartScreen && this.gameMode === 'random' ? [['selected', '']] : []),
+      ],
       textContent: 'Random',
     });
 
     const chaoticOption = new ElementCreator({
       tag: 'option',
-      attributesNames: [['value', 'chaotic']],
+      attributesNames: [
+        ['value', 'chaotic'],
+        ...(!isStartScreen && this.gameMode === 'chaotic' ? [['selected', '']] : []),
+      ],
       textContent: 'Chaotic',
     });
 
@@ -94,6 +116,11 @@ export default class HeaderView extends ElementCreator {
 
     gameModeWrapper.addInnerElement(gameModeLabel);
     gameModeWrapper.addInnerElement(modeSelect);
+
+    const selectElement = modeSelect.getElement();
+    if (!isStartScreen) {
+      selectElement.value = this.gameMode;
+    }
 
     const settingsWrapper = new ElementCreator({
       tag: 'div',
@@ -153,6 +180,7 @@ export default class HeaderView extends ElementCreator {
     return header;
   }
   updateView(mode) {
+    this.gameMode = mode;
     const header = this.getElement();
     const modeSelect = header.querySelector('.mode-select');
     modeSelect.value = mode;

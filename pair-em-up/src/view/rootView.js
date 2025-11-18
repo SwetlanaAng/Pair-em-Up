@@ -11,6 +11,7 @@ export default class RootView extends ElementCreator {
     this.gameController = null;
     this.controlButtonsPanel = new ControlButtonsPanelView();
     this.assistButtonsPanel = new AssistButtonsPanelView();
+    this.assistAudio = new Audio('./assets/sounds/assist.mp3');
   }
 
   setGameController(gameController) {
@@ -25,10 +26,12 @@ export default class RootView extends ElementCreator {
     this.gameController.setupHeaderHandler();
     this.gameController.setupAutoSave();
 
-    const headerView = this.gameController.getHeaderView().createView();
-    main.append(headerView);
-
+    const headerView = this.gameController.getHeaderView();
+    headerView.gameMode = this.gameController.getGameModel().gameMode;
     const gameState = this.gameController.getGameModel().gameState;
+    const isStartScreen = gameState !== 'playing';
+    const headerElement = headerView.createView(isStartScreen);
+    main.append(headerElement);
 
     if (gameState === 'playing') {
       this.createGameView();
@@ -52,7 +55,14 @@ export default class RootView extends ElementCreator {
         ['disabled', 'true'],
       ],
       textContent: 'continue',
-      callback: () => {
+      callback: (event) => {
+        if (event.target.disabled || event.target.classList.contains('disabled')) {
+          return;
+        }
+        if (this.gameController.audioSettingsService.getSetting('assistTools')) {
+          this.assistAudio.currentTime = 0;
+          this.assistAudio.play();
+        }
         this.gameController.startSavedGame();
         this.updateRootView();
       },
@@ -71,6 +81,10 @@ export default class RootView extends ElementCreator {
       textContent: 'Score Table',
       callback: () => {
         this.gameController.showScoreTable();
+        if (this.gameController.audioSettingsService.getSetting('assistTools')) {
+          this.assistAudio.currentTime = 0;
+          this.assistAudio.play();
+        }
       },
     });
 
