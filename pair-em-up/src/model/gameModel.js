@@ -197,7 +197,9 @@ export default class GameModel {
       this.gameField[row2][col2] = 0;
       this.score += this.getPoints(val1, val2);
       this.amountOfMovesCount++;
-      if (this.score >= 100) {
+      if (this.score >= 30) {
+        //поменяй!!!!
+        console.log('win');
         this.gameState = 'win';
         this.score = 0;
         this.addNumberCount = 10;

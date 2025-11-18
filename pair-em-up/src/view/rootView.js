@@ -343,9 +343,10 @@ export default class RootView extends ElementCreator {
       const newGameButton = new ElementCreator({
         tag: 'button',
         classNames: ['modal-button', 'btn', 'new-game-btn'],
-        textContent: 'New Game',
+        textContent: 'Start Screen',
         callback: () => {
-          this.gameController.resetToStartScreen();
+          this.gameController.getGameModel().gameState = 'waiting';
+          this.closeModal();
           this.updateRootView();
         },
       });

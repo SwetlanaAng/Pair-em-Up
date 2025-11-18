@@ -271,7 +271,7 @@ export default class GameController {
       if (this.audioSettingsService.getSetting('gameEvents')) {
         this.winAudio.play();
       }
-      this.localStorageService.clearSavedGame();
+      //this.localStorageService.clearSavedGame();
       this.updateContinueButton();
       this.rootView.createModal('win', gameResult);
       this.localStorageService.setCompletedGameToStorage(gameResult);
@@ -279,7 +279,7 @@ export default class GameController {
       if (this.audioSettingsService.getSetting('gameEvents')) {
         this.loseAudio.play();
       }
-      this.localStorageService.clearSavedGame();
+      //this.localStorageService.clearSavedGame();
       this.updateContinueButton();
       this.rootView.createModal('lose', gameResult);
       this.localStorageService.setCompletedGameToStorage(gameResult);
