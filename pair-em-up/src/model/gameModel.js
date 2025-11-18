@@ -11,7 +11,7 @@ export default class GameModel {
     this.columns = 9;
     this.gameMode = 'classic';
     this.score = 0;
-    this.gameState = 'playing';
+    this.gameState = 'waiting';
     this.addNumberCount = 10;
     this.shuffleCount = 5;
     this.eraserCount = 5;

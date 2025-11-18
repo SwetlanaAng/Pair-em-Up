@@ -22,10 +22,68 @@ export default class RootView extends ElementCreator {
     if (!main.parentNode) {
       document.body.append(main);
     }
+    this.gameController.setupHeaderHandler();
+    this.gameController.setupAutoSave();
+
     const headerView = this.gameController.getHeaderView().createView();
     main.append(headerView);
+
+    const gameState = this.gameController.getGameModel().gameState;
+
+    if (gameState === 'playing') {
+      this.createGameView();
+    } else {
+      this.createStartScreen();
+    }
+  }
+
+  createStartScreen() {
+    const main = this.getElement();
+    const startButtonsPanel = new ElementCreator({
+      tag: 'div',
+      classNames: ['control-buttons-panel'],
+    });
+
+    const continueButton = new ElementCreator({
+      tag: 'button',
+      classNames: ['btn', 'continue', 'disabled'],
+      attrubutesNames: [
+        ['type', 'button'],
+        ['disabled', 'true'],
+      ],
+      textContent: 'continue',
+      callback: () => {
+        this.gameController.startSavedGame();
+        this.updateRootView();
+      },
+    });
+
+    const savedGame = this.gameController.localStorageService.getSavedGameResults();
+    if (savedGame && savedGame.mode) {
+      continueButton.getElement().disabled = false;
+      continueButton.getElement().classList.remove('disabled');
+    }
+
+    const scoreTableButton = new ElementCreator({
+      tag: 'button',
+      classNames: ['btn', 'score-table'],
+      attrubutesNames: [['type', 'button']],
+      textContent: 'Score Table',
+      callback: () => {
+        this.gameController.showScoreTable();
+      },
+    });
+
+    startButtonsPanel.addInnerElement(continueButton);
+    startButtonsPanel.addInnerElement(scoreTableButton);
+    main.append(startButtonsPanel.getElement());
+  }
+
+  createGameView() {
+    const main = this.getElement();
     const controlButtonsPanelView = this.controlButtonsPanel.createView(this.gameController);
     main.append(controlButtonsPanelView);
+
     const currentGameIndicatorsView = this.gameController
       .getCurrentGameIndicatorsView()
       .createView();
@@ -36,6 +94,20 @@ export default class RootView extends ElementCreator {
 
     const assistButtonsPanelView = this.assistButtonsPanel.createView(this.gameController);
     main.append(assistButtonsPanelView);
+
+    if (
+      this.gameController.gameFieldView.revertPair &&
+      this.gameController.gameFieldView.revertPair.length > 0
+    ) {
+      const revertButton = this.assistButtonsPanel.getElement().querySelector('.revert');
+      if (revertButton) {
+        revertButton.disabled = false;
+        revertButton.classList.remove('disabled');
+      }
+    }
+
+    this.gameController.getCurrentGameIndicatorsView().resetTimer();
+    this.gameController.getCurrentGameIndicatorsView().startTimer();
   }
 
   createModal(state, gameResult) {
@@ -283,10 +355,6 @@ export default class RootView extends ElementCreator {
     if (modal) {
       modal.remove();
     }
-    const currentMode = this.gameController.getGameModel().gameMode;
-    this.gameController.updateGameFieldData(currentMode);
-    this.gameController.setGameState('playing');
-    this.gameController.getCurrentGameIndicatorsView().resetTimer();
     main.innerHTML = '';
     this.createView();
   }

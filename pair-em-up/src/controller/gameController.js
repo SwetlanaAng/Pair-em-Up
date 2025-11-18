@@ -22,13 +22,14 @@ export default class GameController {
 
   init() {
     const gameFieldData = this.gameModel.getGameField();
-    this.setupHeaderHandler();
-    this.setupAutoSave();
-
     return this.gameFieldView.createView(gameFieldData);
   }
 
   setupAutoSave() {
+    if (this.autoSaveSetup) {
+      return;
+    }
+    this.autoSaveSetup = true;
     window.addEventListener('beforeunload', () => {
       this.autoSaveGame();
     });
@@ -47,9 +48,11 @@ export default class GameController {
 
   setupHeaderHandler() {
     this.headerView.onSelect((gameMode) => {
+      console.log('Mode selected:', gameMode);
       this.gameModel.setGameMode(gameMode);
+      console.log('Game state before startNewGame:', this.gameModel.gameState);
       this.startNewGame();
-      this.updateGame('00', '00');
+      console.log('Game state after startNewGame:', this.gameModel.gameState);
     });
   }
 
@@ -130,11 +133,11 @@ export default class GameController {
 
     this.gameFieldView.revertPair = [];
     this.gameModel.startNewGame();
+    this.gameModel.gameState = 'playing';
     this.assistButtonsPanel.addNumbersIsDisabled = false;
     this.assistButtonsPanel.shuffleIsDisabled = false;
-    this.currentGameIndicatorsView.resetTimer();
-    this.currentGameIndicatorsView.startTimer();
-    this.assistButtonsPanel.updateView(this);
+
+    this.rootView.updateRootView();
   }
   revertPair(row1, col1, row2, col2, val1, val2) {
     this.gameModel.revertPair(row1, col1, row2, col2, val1, val2);
@@ -176,11 +179,6 @@ export default class GameController {
 
     if (savedGame.revertPair && savedGame.revertPair.length > 0) {
       this.gameFieldView.revertPair = savedGame.revertPair;
-      const revertButton = this.assistButtonsPanel.getElement().querySelector('.revert');
-      if (revertButton) {
-        revertButton.disabled = false;
-        revertButton.classList.remove('disabled');
-      }
     } else {
       this.gameFieldView.revertPair = [];
     }
@@ -207,6 +205,7 @@ export default class GameController {
     }
     this.updateGame(minutes, seconds);
     this.currentGameIndicatorsView.resumeTimer();
+    this.rootView.updateRootView();
   }
   resetGame() {
     this.gameModel.resetGame();
