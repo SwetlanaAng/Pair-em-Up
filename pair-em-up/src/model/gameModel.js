@@ -197,12 +197,8 @@ export default class GameModel {
       this.gameField[row2][col2] = 0;
       this.score += this.getPoints(val1, val2);
       this.amountOfMovesCount++;
-      if (this.score >= 30) {
-        //поменяй!!!!
-        console.log('win');
+      if (this.score >= 100) {
         this.gameState = 'win';
-        this.score = 0;
-        this.addNumberCount = 10;
       }
       return true;
     } else return false;
@@ -293,23 +289,23 @@ export default class GameModel {
       return true;
     }
     if (this.gameState === 'playing') {
-      return false;
+      if (
+        (this.getNumberValidPairs(this.gameField) === 0 ||
+          this.gameField.every((row) => row.length === 0)) &&
+        this.addNumberCount === 0 &&
+        this.shuffleCount === 0 &&
+        this.eraserCount === 0 &&
+        /* !this.revertOpportunity && */ // not sure about this
+        this.score < 100
+      ) {
+        this.gameState = 'lose';
+        return true;
+      }
     }
     if (this.gameField.length > this.maxRows) {
       this.gameState = 'lose';
       return true;
     }
-    if (
-      (this.getNumberValidPairs(this.gameField) === 0 ||
-        this.gameField.every((row) => row.length === 0)) &&
-      this.addNumberCount === 0 &&
-      this.shuffleCount === 0 &&
-      this.eraserCount === 0 &&
-      !this.revertOpportunity &&
-      this.score < 100
-    ) {
-      this.gameState = 'lose';
-      return true;
-    } else return false;
+    return false;
   }
 }

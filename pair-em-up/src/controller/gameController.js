@@ -108,6 +108,9 @@ export default class GameController {
     this.gameModel.addNumbersToGameField();
     const updatedGameFieldData = this.gameModel.getGameField();
     this.gameFieldView.updateView(updatedGameFieldData);
+    if (this.isFailed()) {
+      this.isWinOrLose();
+    }
   }
   getValidPairsCount() {
     if (this.gameModel.gameState === 'lose') {
@@ -124,6 +127,9 @@ export default class GameController {
     this.gameModel.shuffleGameField();
     const updatedGameFieldData = this.gameModel.getGameField();
     this.gameFieldView.updateView(updatedGameFieldData);
+    if (this.isFailed()) {
+      this.isWinOrLose();
+    }
   }
   getEraserButton() {
     return this.assistButtonsPanel.getElement().querySelector('.eraser');
@@ -132,6 +138,9 @@ export default class GameController {
     this.gameModel.eraseCell(row, col);
     const updatedGameFieldData = this.gameModel.getGameField();
     this.gameFieldView.updateView(updatedGameFieldData);
+    if (this.isFailed()) {
+      this.isWinOrLose();
+    }
   }
   startNewGame() {
     this.winAudio.pause();
@@ -271,16 +280,14 @@ export default class GameController {
       if (this.audioSettingsService.getSetting('gameEvents')) {
         this.winAudio.play();
       }
-      //this.localStorageService.clearSavedGame();
-      this.updateContinueButton();
+
       this.rootView.createModal('win', gameResult);
       this.localStorageService.setCompletedGameToStorage(gameResult);
     } else if (this.gameModel.gameState === 'lose') {
       if (this.audioSettingsService.getSetting('gameEvents')) {
         this.loseAudio.play();
       }
-      //this.localStorageService.clearSavedGame();
-      this.updateContinueButton();
+
       this.rootView.createModal('lose', gameResult);
       this.localStorageService.setCompletedGameToStorage(gameResult);
     }

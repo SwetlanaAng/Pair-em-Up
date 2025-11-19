@@ -449,7 +449,6 @@ body {
 
 .modal-content {
   width: 500px;
-  min-height: 400px;
   max-height: 90vh;
   background: var(--bg-tertiary);
   padding: 20px 50px;
