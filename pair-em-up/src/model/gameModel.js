@@ -207,7 +207,10 @@ export default class GameModel {
     this.addNumberCount--;
     this.normalizeGameField();
 
-    const currentGameField = this.gameField.flat();
+    let currentGameField = this.gameField.flat();
+    while (currentGameField.length > 0 && currentGameField[currentGameField.length - 1] === 0) {
+      currentGameField.pop();
+    }
     const leftNumbers = currentGameField.filter((cell) => cell !== 0);
 
     if (this.gameMode === 'classic') {
@@ -227,7 +230,12 @@ export default class GameModel {
   }
   shuffleGameField() {
     this.shuffleCount--;
-    this.gameField = this.gameField.sort(() => Math.random() - 0.5);
+    const flatArray = this.gameField.flat();
+    const shuffled = flatArray.sort(() => Math.random() - 0.5);
+    this.gameField = [];
+    for (let i = 0; i < shuffled.length; i += this.columns) {
+      this.gameField.push(shuffled.slice(i, i + this.columns));
+    }
     this.normalizeGameField();
   }
 

@@ -42,9 +42,6 @@ export default class AssistButtonsPanelView extends ElementCreator {
           if (this.gameController.gameModel.addNumberCount === 0) {
             this.addNumbersIsDisabled = true;
           }
-          if (this.gameController.gameModel.gameState === 'lose') {
-            this.gameController.isWinOrLose();
-          }
           if (this.addNumbersIsDisabled) {
             event.target.disabled = true;
             event.target.classList.add('disabled');
