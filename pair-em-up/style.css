@@ -282,7 +282,7 @@ body {
   background: var(--cell-bg);
   border: 2px solid var(--border-color);
   border-radius: 8px;
-  font-size: 18px;
+  font-size: 27px;
   font-weight: bold;
   color: var(--text-primary);
   cursor: pointer;
@@ -906,9 +906,7 @@ body {
     gap: 8px;
   }
 
-  .grid-cell {
-    font-size: 18px;
-  }
+  
 
   .control-buttons-panel,
   .assist-buttons-panel {
