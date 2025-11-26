@@ -79,10 +79,6 @@ export default class GameController {
     return isValid;
   }
 
-  getGameFieldView() {
-    return this.gameFieldView;
-  }
-
   getHeaderView() {
     return this.headerView;
   }
@@ -93,16 +89,6 @@ export default class GameController {
 
   getCurrentGameIndicatorsView() {
     return this.currentGameIndicatorsView;
-  }
-  updateGameFieldData(gameMode = 'classic') {
-    return this.gameModel.setGameMode(gameMode);
-  }
-  setGameState(gameState) {
-    return (this.gameModel.gameState = gameState);
-  }
-  updateView() {
-    const gameFieldData = this.gameModel.getGameField();
-    return this.gameFieldView.createView(gameFieldData);
   }
   addNumbersToGameField() {
     this.gameModel.addNumbersToGameField();

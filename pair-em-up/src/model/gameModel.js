@@ -26,10 +26,6 @@ export default class GameModel {
     return this.gameField;
   }
 
-  getRowsCount() {
-    return this.gameField.length;
-  }
-
   setGameMode(gameMode) {
     this.gameMode = gameMode;
     if (this.gameMode === 'classic') {
@@ -84,12 +80,6 @@ export default class GameModel {
     return this.getGameFieldFromArray(interimArray.sort(() => Math.random() - 0.5));
   }
 
-  getLeftNumbers() {
-    return this.gameField.forEach((row) => {
-      return row.filter((cell) => cell !== 0);
-    });
-  }
-
   getCellValue(row, col) {
     if (row >= 0 && row < this.gameField.length && col >= 0 && col < this.columns) {
       return this.gameField[row][col];
@@ -97,13 +87,6 @@ export default class GameModel {
     return null;
   }
 
-  setCellValue(row, col, value) {
-    if (row >= 0 && row < this.gameField.length && col >= 0 && col < this.columns) {
-      this.gameField[row][col] = value;
-      return true;
-    }
-    return false;
-  }
   getPoints(val1, val2) {
     if (val1 === 5 && val2 === 5) {
       return 3;

@@ -24,12 +24,6 @@ export default class ThemeService {
     this.applyTheme(theme);
   }
 
-  toggleTheme() {
-    const newTheme = this.currentTheme === 'dark' ? 'light' : 'dark';
-    this.setTheme(newTheme);
-    return newTheme;
-  }
-
   applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
   }

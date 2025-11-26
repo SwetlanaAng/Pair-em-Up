@@ -14,10 +14,6 @@ export default class LocalStorageService {
     return results ? JSON.parse(results) : {};
   }
 
-  clearSavedGame() {
-    localStorage.removeItem(this.SAVED_GAME_KEY);
-  }
-
   getCompletedGamesList() {
     const completedGames = localStorage.getItem(this.COMPLETED_GAMES_RESULTS_KEY);
     return completedGames ? JSON.parse(completedGames) : [];
